@@ -1,0 +1,48 @@
+Row(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                child: Center(
+                  child: TextButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, MyConstant.routeMapUser),
+                    child: ShowImage(path: MyConstant.logo),
+                  ),
+                ),
+              )
+            ],
+          ),
+           Column(children: [Container(margin: EdgeInsets.zero, child: Text('data'))],),
+        ],
+      ),
+
+
+      Align(
+        alignment: Alignment.bottomRight,
+        child: Text('data'),
+      ),
+
+      Center(
+                  child: TextButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, MyConstant.routeMapUser),
+                    child: ShowImage(path: MyConstant.logo),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text('data'),
+                ),
+TextButton(child: Text('555'),onPressed: ()=>Navigator.pushNamed(context, MyConstant.routeAuthen),),
+
+IconButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, MyConstant.routeAuthen),
+              icon: Icon(
+                Icons.map_outlined,
+                color: MyConstant.light,
+              
+              ),
+            ),
