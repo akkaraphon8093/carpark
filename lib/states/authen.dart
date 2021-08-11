@@ -16,6 +16,13 @@ class _AuthenState extends State<Authen> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+         iconTheme: IconThemeData(
+              color: MyConstant.dark,
+            ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: ListView(
           children: [
@@ -24,10 +31,27 @@ class _AuthenState extends State<Authen> {
             buildUser(size),
             buildPassword(size),
             buildLogin(size),
+            bulidCreateAccount()
           ],
         ),
       ),
     );
+  }
+
+  Row bulidCreateAccount() {
+    return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ShowTitle(
+                title: 'New user?',
+                textStlye: MyConstant().h4Style(),
+              ),
+              TextButton(
+                onPressed: () =>Navigator.pushNamed(context, MyConstant.routeCreatAccount),
+                child: Text('Create an account'),
+              ),
+            ],
+          );
   }
 
   Row buildLogin(double size) {
@@ -39,7 +63,8 @@ class _AuthenState extends State<Authen> {
           width: size * 0.6,
           child: ElevatedButton(
             style: MyConstant().myButtonStyle(),
-            onPressed: () {},
+            //onPressed: () {},
+            onPressed: () =>Navigator.pushNamed(context, MyConstant.routeMapUser),
             child: Text('Login'),
           ),
         ),
@@ -129,8 +154,9 @@ class _AuthenState extends State<Authen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ShowTitle(
-          title: MyConstant.appName,
-          textStlye: MyConstant().h1Style(),
+          title: 'PARKFORU (Sanpawut)',
+          textStlye: MyConstant().h2Style(),
+          
         ),
       ],
     );
@@ -140,7 +166,7 @@ class _AuthenState extends State<Authen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(width: size * 0.5, child: ShowImage(path: MyConstant.image1)),
+        Container(width: size * 0.5, child: ShowImage(path: MyConstant.image4)),
       ],
     );
   }

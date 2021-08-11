@@ -46,3 +46,13 @@ IconButton(
               
               ),
             ),
+
+
+            body: GoogleMap(
+        myLocationEnabled: true,
+        mapType: MapType.normal,
+        initialCameraPosition: CameraPosition(
+          target: LatLng(13.674479, 100.600733),
+          zoom: 15,
+        ),
+      ),
