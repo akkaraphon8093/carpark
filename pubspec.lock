@@ -43,6 +43,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  convert:
+    dependency: "direct main"
+    description:
+      name: convert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -79,41 +86,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  geolocator:
+  fluttertoast:
     dependency: "direct main"
     description:
-      name: geolocator
+      name: fluttertoast
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.4.0"
-  geolocator_android:
-    dependency: transitive
-    description:
-      name: geolocator_android
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
-  geolocator_apple:
-    dependency: transitive
-    description:
-      name: geolocator_apple
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
-  geolocator_platform_interface:
-    dependency: transitive
-    description:
-      name: geolocator_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.3.2"
-  geolocator_web:
-    dependency: transitive
-    description:
-      name: geolocator_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.6"
+    version: "8.0.8"
   google_maps_flutter:
     dependency: "direct main"
     description:
@@ -127,7 +106,14 @@ packages:
       name: google_maps_flutter_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
+  http:
+    dependency: "direct main"
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.3"
   http_parser:
     dependency: transitive
     description:
@@ -184,6 +170,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.11.1"
   plugin_platform_interface:
     dependency: transitive
     description:

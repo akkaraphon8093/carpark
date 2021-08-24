@@ -1,9 +1,11 @@
-import 'dart:ffi';
-
+import 'dart:convert';
 import 'package:carpark/utillity/my_constan.dart';
 import 'package:carpark/widgets/show_image.dart';
 import 'package:carpark/widgets/show_title.dart';
 import 'package:flutter/material.dart';
+import 'package:carpark/states/authen.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CreatAccount extends StatefulWidget {
   const CreatAccount({Key? key}) : super(key: key);
@@ -14,6 +16,52 @@ class CreatAccount extends StatefulWidget {
 
 class _CreatAccountState extends State<CreatAccount> {
   bool statusRedEye = true; //showpass
+  var _name = GlobalKey<FormState>();
+  var _email = GlobalKey<FormState>();
+  var _phone = GlobalKey<FormState>();
+  var _user = GlobalKey<FormState>();
+  var _pass = GlobalKey<FormState>();
+  var _cpass = GlobalKey<FormState>();
+
+  TextEditingController name = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController phone = TextEditingController();
+  TextEditingController user = TextEditingController();
+  TextEditingController pass = TextEditingController();
+  TextEditingController cpass = TextEditingController();
+
+  Future signup() async {
+    var res = await http.post(
+      Uri.parse(
+        "http://192.168.1.107/pj/insertUser.php",
+      ),
+      body: {
+        "name": name.text,
+        "email": email.text,
+        "phone": phone.text,
+        "user": user.text,
+        "pass": pass.text,
+        "cpass": cpass.text,
+        
+      },
+    );
+
+    var data = json.decode(res.body);
+
+    if(data["code"]=="1"){Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) => new Authen()));} else {
+            Fluttertoast.showToast(
+        msg: "มีชื่อผู้ใช้นี้แล้ว",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+          }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +122,7 @@ class _CreatAccountState extends State<CreatAccount> {
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
           child: TextFormField(
+            controller: name,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
               labelText: 'Name :',
@@ -104,6 +153,7 @@ class _CreatAccountState extends State<CreatAccount> {
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
           child: TextFormField(
+            controller: email,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
               labelText: 'Email :',
@@ -134,6 +184,7 @@ class _CreatAccountState extends State<CreatAccount> {
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
           child: TextFormField(
+            controller: phone,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
               labelText: 'PhonNumber :',
@@ -163,7 +214,8 @@ class _CreatAccountState extends State<CreatAccount> {
         Container(
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
-          child: TextFormField(
+          child: Form(key: _user,child: TextFormField(
+            controller: user,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
               labelText: 'User :',
@@ -180,7 +232,14 @@ class _CreatAccountState extends State<CreatAccount> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
+            validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "กรุณากรอก User";
+                          } 
+                          return null;
+                        },
           ),
+        ),
         ),
       ],
     );
@@ -193,7 +252,8 @@ class _CreatAccountState extends State<CreatAccount> {
         Container(
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
-          child: TextFormField(
+          child: Form(key: _pass,child: TextFormField(
+            controller: pass,
             obscureText: statusRedEye, //Password**
             decoration: InputDecoration(
               suffixIcon: IconButton(
@@ -227,6 +287,13 @@ class _CreatAccountState extends State<CreatAccount> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
+            validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "กรุณายืนยันรหัสผ่าน";
+                          } 
+                          return null;
+                        },
+          ),
           ),
         ),
       ],
@@ -240,7 +307,11 @@ class _CreatAccountState extends State<CreatAccount> {
         Container(
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
-          child: TextFormField(
+          child: Form(
+            key: _cpass,
+            child: TextFormField(
+            controller: cpass,
+            obscureText: statusRedEye,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
               labelText: 'ConfirmPassword :',
@@ -257,7 +328,15 @@ class _CreatAccountState extends State<CreatAccount> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
-          ),
+            validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "กรุณายืนยันรหัสผ่าน";
+                          } else if (value != pass.text) {
+                            return "รหัสผ่านไม่ตรงกัน";
+                          }
+                          return null;
+                        },
+          ),)
         ),
       ],
     );
@@ -273,8 +352,9 @@ class _CreatAccountState extends State<CreatAccount> {
           child: ElevatedButton(
             style: MyConstant().myButtonStyle(),
             //onPressed: () {},
-            onPressed: () =>
-                Navigator.pushNamed(context, MyConstant.routeAuthen),
+            onPressed: () { if (_user.currentState!.validate() && _pass.currentState!.validate() && _cpass.currentState!.validate())  {
+                            signup();
+                          }},
             child: Text('Create account'),
           ),
         ),

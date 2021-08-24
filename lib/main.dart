@@ -4,7 +4,7 @@ import 'package:carpark/states/create_account.dart';
 import 'package:carpark/states/loading.dart';
 import 'package:carpark/states/map_user.dart';
 import 'package:carpark/states/rider_service.dart';
-import 'package:carpark/states/saler_service.dart';
+import 'package:carpark/states/testmap.dart';
 import 'package:carpark/utillity/my_constan.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ final Map<String,WidgetBuilder>map ={
   '/authen':(BuildContext context)=>Authen(),
   '/creatAccount':(BuildContext context)=> CreatAccount(),
   '/buyerService':(BuildContext context)=>BuyerService(),
-  '/salerService':(BuildContext context)=>SalerService(),
+  '/testMap':(BuildContext context)=>TestMap(),
   '/riderService':(BuildContext context)=>RiderService(),
   '/mapUser':(BuildContext context)=>MapUser(),
   '/loading':(BuildContext context)=>Loading(),

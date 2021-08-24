@@ -21,7 +21,7 @@ class _LoadingState extends State<Loading> {
         Expanded(
           child: TextButton(
             onPressed: () =>
-                Navigator.pushNamed(context, MyConstant.routeMapUser),
+                Navigator.pushNamed(context, MyConstant.routeAuthen),
             child: ShowImage(path: MyConstant.logotest),
           ),
           flex: 2,

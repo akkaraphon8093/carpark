@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:carpark/states/map_user.dart';
 import 'package:carpark/utillity/my_constan.dart';
 import 'package:carpark/widgets/show_image.dart';
 import 'package:carpark/widgets/show_title.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Authen extends StatefulWidget {
   const Authen({Key? key}) : super(key: key);
@@ -12,17 +17,41 @@ class Authen extends StatefulWidget {
 
 class _AuthenState extends State<Authen> {
   bool statusRedEye = true; //showpass
+
+  TextEditingController user = TextEditingController();
+  TextEditingController pass = TextEditingController();
+
+  Future signin() async {
+    var res = await http.post(
+      Uri.parse(
+        "http://192.168.1.107/pj/selectUserPass.php",
+      ),
+      body: {
+        "user": user.text,
+        "pass": pass.text,
+      },
+    );
+    var data = json.decode(res.body);
+
+    if (data["code"] == "1") {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => new MapUser(name: data["name"])));
+    } else {
+      Fluttertoast.showToast(
+        msg: "รหัสผ่านหรือชื่อผู้ใช้ไม่ถูกต้อง",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-         iconTheme: IconThemeData(
-              color: MyConstant.dark,
-            ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
       body: SafeArea(
         child: ListView(
           children: [
@@ -40,18 +69,19 @@ class _AuthenState extends State<Authen> {
 
   Row bulidCreateAccount() {
     return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ShowTitle(
-                title: 'New user?',
-                textStlye: MyConstant().h4Style(),
-              ),
-              TextButton(
-                onPressed: () =>Navigator.pushNamed(context, MyConstant.routeCreatAccount),
-                child: Text('Create an account'),
-              ),
-            ],
-          );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ShowTitle(
+          title: 'New user?',
+          textStlye: MyConstant().h4Style(),
+        ),
+        TextButton(
+          onPressed: () =>
+              Navigator.pushNamed(context, MyConstant.routeCreatAccount),
+          child: Text('Create an account'),
+        ),
+      ],
+    );
   }
 
   Row buildLogin(double size) {
@@ -64,7 +94,7 @@ class _AuthenState extends State<Authen> {
           child: ElevatedButton(
             style: MyConstant().myButtonStyle(),
             //onPressed: () {},
-            onPressed: () =>Navigator.pushNamed(context, MyConstant.routeMapUser),
+            onPressed: () => signin(),
             child: Text('Login'),
           ),
         ),
@@ -80,6 +110,7 @@ class _AuthenState extends State<Authen> {
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
           child: TextFormField(
+            controller: user,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
               labelText: 'User :',
@@ -110,6 +141,7 @@ class _AuthenState extends State<Authen> {
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
           child: TextFormField(
+            controller: pass,
             obscureText: statusRedEye, //Password**
             decoration: InputDecoration(
               suffixIcon: IconButton(
@@ -156,7 +188,6 @@ class _AuthenState extends State<Authen> {
         ShowTitle(
           title: 'PARKFORU (Sanpawut)',
           textStlye: MyConstant().h2Style(),
-          
         ),
       ],
     );

@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:carpark/utillity/my_constan.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 
 
 class MapUser extends StatefulWidget {
-  const MapUser({Key? key}) : super(key: key);
+final name;
+
+  const MapUser({Key? key,this.name}) : super(key: key);
 
   @override
   _MapUserState createState() => _MapUserState();
@@ -68,7 +69,13 @@ class _MapUserState extends State<MapUser> {
                 Divider(color: Colors.white70,),
                 const SizedBox(height: 10,),
                 buildMenuItem(
-                  text: 'Login',
+                  text: '${widget.name}',
+                  icon: Icons.face_outlined,
+
+                ),
+                const SizedBox(height: 5,),
+                buildMenuItem(
+                  text: 'Logout',
                   icon: Icons.login_outlined,
                   onClicked:() => Navigator.pushNamed(context, MyConstant.routeAuthen),
                 ),
