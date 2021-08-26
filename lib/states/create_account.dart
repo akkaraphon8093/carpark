@@ -22,6 +22,7 @@ class _CreatAccountState extends State<CreatAccount> {
   var _user = GlobalKey<FormState>();
   var _pass = GlobalKey<FormState>();
   var _cpass = GlobalKey<FormState>();
+  var _signup = GlobalKey<FormState>();
 
   TextEditingController name = TextEditingController();
   TextEditingController email = TextEditingController();
@@ -74,20 +75,22 @@ class _CreatAccountState extends State<CreatAccount> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: ListView(
-        children: [
-          buildImage(size),
-          buildTitle(),
-          buildName(size),
-          buildEmail(size),
-          buildPhon(size),
-          buildUser(size),
-          buildPassword(size),
-          buildConfirmPassword(size),
-          const SizedBox(height: 10,),
-          buildTitle1(),
-          buildCreate(size),
-        ],
+      body: Form(key: _signup,
+        child: ListView(
+          children: [
+            buildImage(size),
+            buildTitle(),
+            buildName(size),
+            buildEmail(size),
+            buildPhon(size),
+            buildUser(size),
+            buildPassword(size),
+            buildConfirmPassword(size),
+            const SizedBox(height: 10,),
+            buildTitle1(),
+            buildCreate(size),
+          ],
+        ),
       ),
     );
   }
@@ -139,6 +142,12 @@ class _CreatAccountState extends State<CreatAccount> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
+            validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "กรุณากรอกชื่อผู้ใช้งาน";
+                          } 
+                          return null;
+                        },
           ),
         ),
       ],
@@ -170,6 +179,12 @@ class _CreatAccountState extends State<CreatAccount> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
+            validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "กรุณากรอก Email";
+                          } 
+                          return null;
+                        },
           ),
         ),
       ],
@@ -201,6 +216,12 @@ class _CreatAccountState extends State<CreatAccount> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
+            validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "กรุณากรอกเบอร์โทรศัพท์";
+                          } 
+                          return null;
+                        },
           ),
         ),
       ],
@@ -214,7 +235,7 @@ class _CreatAccountState extends State<CreatAccount> {
         Container(
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
-          child: Form(key: _user,child: TextFormField(
+          child: TextFormField(
             controller: user,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
@@ -240,7 +261,6 @@ class _CreatAccountState extends State<CreatAccount> {
                         },
           ),
         ),
-        ),
       ],
     );
   }
@@ -252,7 +272,7 @@ class _CreatAccountState extends State<CreatAccount> {
         Container(
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
-          child: Form(key: _pass,child: TextFormField(
+          child: TextFormField(
             controller: pass,
             obscureText: statusRedEye, //Password**
             decoration: InputDecoration(
@@ -289,13 +309,12 @@ class _CreatAccountState extends State<CreatAccount> {
             ),
             validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "กรุณายืนยันรหัสผ่าน";
+                            return "กรุณากรอกรหัสผ่าน";
                           } 
                           return null;
                         },
           ),
           ),
-        ),
       ],
     );
   }
@@ -307,9 +326,7 @@ class _CreatAccountState extends State<CreatAccount> {
         Container(
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
-          child: Form(
-            key: _cpass,
-            child: TextFormField(
+          child: TextFormField(
             controller: cpass,
             obscureText: statusRedEye,
             decoration: InputDecoration(
@@ -337,7 +354,6 @@ class _CreatAccountState extends State<CreatAccount> {
                           return null;
                         },
           ),)
-        ),
       ],
     );
   }
@@ -352,7 +368,7 @@ class _CreatAccountState extends State<CreatAccount> {
           child: ElevatedButton(
             style: MyConstant().myButtonStyle(),
             //onPressed: () {},
-            onPressed: () { if (_user.currentState!.validate() && _pass.currentState!.validate() && _cpass.currentState!.validate())  {
+            onPressed: () { if (_signup.currentState!.validate())  {
                             signup();
                           }},
             child: Text('Create account'),

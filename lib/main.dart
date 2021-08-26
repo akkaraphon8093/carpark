@@ -7,6 +7,7 @@ import 'package:carpark/states/rider_service.dart';
 import 'package:carpark/states/testmap.dart';
 import 'package:carpark/utillity/my_constan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 final Map<String,WidgetBuilder>map ={
   '/authen':(BuildContext context)=>Authen(),
@@ -23,6 +24,10 @@ String? initlaRouter;
 
 void main(){
   initlaRouter = MyConstant.routeLoading;
+  WidgetsFlutterBinding();
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
   runApp(MyApp());
 }
 
