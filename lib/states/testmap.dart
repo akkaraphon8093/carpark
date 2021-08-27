@@ -24,7 +24,7 @@ var searchAdd;
                 CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 10.0),
           ),
           Positioned(
-            top: 30,
+            top: 60,
             right: 15,
             left: 15,
             child: Container(

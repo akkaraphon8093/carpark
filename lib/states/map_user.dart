@@ -18,11 +18,14 @@ class MapUser extends StatefulWidget {
 class _MapUserState extends State<MapUser> {
   Completer<GoogleMapController> _controller = Completer();
   final padding = EdgeInsets.symmetric(horizontal: 20);
+  GlobalKey<ScaffoldState> _drawer = GlobalKey<ScaffoldState>();
 
   var userLocation;
   var mapController;
   Set<Marker> markmap = {};
   var carparkIcon;
+  var gasIcon;
+  var evIcon;
   var searchAdd;
 
   @override
@@ -33,26 +36,105 @@ class _MapUserState extends State<MapUser> {
 
   void markerIcons() async {
     carparkIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2.0), 'images/gasstation.png');
+        ImageConfiguration(devicePixelRatio: 2.0), 'images/carpark.png');
+    gasIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 2.0), 'images/gas.png');
+    evIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 2.0), 'images/charging.png');
   }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
     setState(() {
+      //ที่จอดรถ
       markmap.add(
         Marker(
-            markerId: MarkerId("1"),
-            position: LatLng(13.580846073645597, 100.65173088713934),
-            icon: carparkIcon,
-            infoWindow: InfoWindow(title: 'sdsd', snippet: 'sf')),
+          markerId: MarkerId("P1"),
+          position: LatLng(13.578806435552593, 100.65056822381912),
+          icon: carparkIcon,
+          infoWindow: InfoWindow(title: 'Carpark', snippet: 'ซอยพุฒสี8 แพรกษา'),    
+        ),
       );
       markmap.add(
         Marker(
-          markerId: MarkerId("2"),
-          position: LatLng(13.582963121318436, 100.64793287930931),
+          markerId: MarkerId("P2"),
+          position: LatLng(13.673677928287058, 100.60031897355654),
+          icon: carparkIcon,
+          infoWindow:
+              InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ พรวัฒนาซีแอล'),
+        ),
+      );
+      markmap.add(
+        Marker(
+          markerId: MarkerId("P3"),
+          position: LatLng(13.676693461500971, 100.58804024985879),
+          icon: carparkIcon,
+          infoWindow:
+              InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ วัดบางนานอก'),
+        ),
+      );
+      markmap.add(
+        Marker(
+          markerId: MarkerId("P4"),
+          position: LatLng(13.67479383466374, 100.60120095938518),
+          icon: carparkIcon,
+          infoWindow: InfoWindow(title: 'Carpark', snippet: 'อาคารจอดรถ SBC'),
+        ),
+      );
+      markmap.add(
+        Marker(
+          markerId: MarkerId("P5"),
+          position: LatLng(13.671553762345583, 100.61055903771953),
+          icon: carparkIcon,
+          infoWindow:
+              InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ ไบเทคบางนา'),
         ),
       );
     });
+    setState(() {
+      //ปั้มน้ำมัน
+      markmap.add(
+        Marker(
+          markerId: MarkerId("G1"),
+          position: LatLng(13.675588145334846, 100.59506391645068),
+          icon: gasIcon,
+          infoWindow:
+              InfoWindow(title: 'GasStition', snippet: 'PTT Station สรรพาวุธ'),
+          
+        ),
+      );
+      markmap.add(
+        Marker(
+          markerId: MarkerId("G2"),
+          position: LatLng(13.580862188966835, 100.65592970937084),
+          icon: gasIcon,
+          infoWindow:
+              InfoWindow(title: 'GasStation', snippet: 'PTT Station ซอยมังกร'),
+        ),
+      );
+    });
+    setState(() {
+      //EV
+      markmap.add(
+        Marker(
+          markerId: MarkerId("E1"),
+          position: LatLng(13.64679532518789, 100.64326791409108),
+          icon: evIcon,
+          infoWindow: InfoWindow(
+              title: 'EV Station', snippet: 'EA Anywhere ซอนศรีด่าน22'),
+        ),
+      );
+      markmap.add(
+        Marker(
+          markerId: MarkerId("E2"),
+          position: LatLng(13.686689238666304, 100.60174509022717),
+          icon: evIcon,
+          infoWindow: InfoWindow(
+              title: 'EV Station', snippet: 'PTT Station ทางด่วนบางนา'),
+        ),
+      );
+    });
+    
   }
 
   Future _getLocation() async {
@@ -68,35 +150,101 @@ class _MapUserState extends State<MapUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _drawer,
       appBar: AppBar(
         centerTitle: true,
         title: Text('PARKFORU'),
-        backgroundColor: MyConstant.dark,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        toolbarHeight: 0,
       ),
-      body: FutureBuilder(
-        future: _getLocation(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return GoogleMap(
-              mapType: MapType.terrain,
-              myLocationEnabled: true,
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                  target: LatLng(userLocation.latitude, userLocation.longitude),
-                  zoom: 15),
-              markers: markmap,
-            );
-          } else {
-            return Center(
-              child: Column(
-                children: <Widget>[
-                  CircularProgressIndicator(),
+      body: Stack(
+        children: [
+          FutureBuilder(
+            future: _getLocation(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return GoogleMap(
+                  mapType: MapType.terrain,
+                  myLocationEnabled: true,
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                      target:
+                          LatLng(userLocation.latitude, userLocation.longitude),
+                      zoom: 15),
+                  markers: markmap,
+                );
+              } else {
+                return Center(
+                  child: Column(
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+          Positioned(
+            top: 30,
+            right: 15,
+            left: 15,
+            child: Container(
+              height: 50,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: MyConstant.dark.withOpacity(0.3),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
                 ],
               ),
-            );
-          }
-        },
+              child: Flexible(
+                  child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: IconButton(
+                      onPressed: () => _drawer.currentState!.openDrawer(),
+                      icon: Icon(Icons.menu),
+                      color: MyConstant.dark,
+                      iconSize: 30,
+                    ),
+                  ),
+                  Expanded(
+                    flex: 7,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(
+                          left: 15,
+                          top: 15,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.search),
+                          color: MyConstant.dark,
+                          onPressed: searchnavigate,
+                          iconSize: 30,
+                        ),
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          searchAdd = val;
+                        });
+                      },
+                    ),
+                  )
+                ],
+              )),
+            ),
+          ),
+        ],
       ),
       drawer: Drawer(
         child: Material(
@@ -181,10 +329,13 @@ class _MapUserState extends State<MapUser> {
         hintText: 'Search',
         hintStyle: TextStyle(color: color),
         suffixIcon: IconButton(
-                    icon: Icon(Icons.search, color: color,),
-                    onPressed: searchnavigate,
-                    iconSize: 30,
-                  ),
+          icon: Icon(
+            Icons.search,
+            color: color,
+          ),
+          onPressed: searchnavigate,
+          iconSize: 30,
+        ),
         filled: true,
         fillColor: Colors.white12,
         enabledBorder: OutlineInputBorder(
@@ -197,12 +348,13 @@ class _MapUserState extends State<MapUser> {
         ),
       ),
       onChanged: (val) {
-                  setState(() {
-                    searchAdd = val;
-                  });
-                },
+        setState(() {
+          searchAdd = val;
+        });
+      },
     );
   }
+
   searchnavigate() {
     locationFromAddress(searchAdd).then((result) {
       mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -210,7 +362,9 @@ class _MapUserState extends State<MapUser> {
         zoom: 15,
       )));
     });
+    FocusScope.of(context).requestFocus(FocusNode());
   }
+
   void onMapCreated(controller) {
     setState(() {
       mapController = controller;
