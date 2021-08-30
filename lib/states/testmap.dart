@@ -10,18 +10,22 @@ class TestMap extends StatefulWidget {
 }
 
 class _TestMapState extends State<TestMap> {
-var mapController;
-var searchAdd;
- 
+  var mapController;
+  var searchAdd;
+  var mapWidget;
+  var controller;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     body: Stack(
+      body: Stack(
         children: [
-          GoogleMap(
-            onMapCreated: onMapCreated,
-            initialCameraPosition:
-                CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 10.0),
+          SizedBox(width: 500,height: 500,
+            child: GoogleMap(
+              onMapCreated: onMapCreated,
+              initialCameraPosition:
+                  CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 10.0),
+            ),
           ),
           Positioned(
             top: 60,
@@ -60,6 +64,7 @@ var searchAdd;
       ),
     );
   }
+
   searchnavigate() {
     locationFromAddress(searchAdd).then((result) {
       mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(

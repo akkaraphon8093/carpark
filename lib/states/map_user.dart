@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:carpark/utillity/my_constan.dart';
+import 'package:carpark/widgets/show_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -49,11 +51,23 @@ class _MapUserState extends State<MapUser> {
       //ที่จอดรถ
       markmap.add(
         Marker(
-          markerId: MarkerId("P1"),
-          position: LatLng(13.578806435552593, 100.65056822381912),
-          icon: carparkIcon,
-          infoWindow: InfoWindow(title: 'Carpark', snippet: 'ซอยพุฒสี8 แพรกษา'),    
-        ),
+            markerId: MarkerId("P1"),
+            position: LatLng(13.578806435552593, 100.65056822381912),
+            icon: carparkIcon,
+            infoWindow:
+                InfoWindow(title: 'Carpark', snippet: 'ซอยพุฒสี8 แพรกษา'),
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('ที่จอดรถซอยพุฒสี8'),
+                     content: Text('ffffffff'),
+                    );
+                    
+                  });
+            }),
       );
       markmap.add(
         Marker(
@@ -100,7 +114,6 @@ class _MapUserState extends State<MapUser> {
           icon: gasIcon,
           infoWindow:
               InfoWindow(title: 'GasStition', snippet: 'PTT Station สรรพาวุธ'),
-          
         ),
       );
       markmap.add(
@@ -134,7 +147,6 @@ class _MapUserState extends State<MapUser> {
         ),
       );
     });
-    
   }
 
   Future _getLocation() async {
@@ -149,14 +161,15 @@ class _MapUserState extends State<MapUser> {
 
   @override
   Widget build(BuildContext context) {
+    final name = 'PARKFORU';
+    final caption = 'Sanpawut Road';
     return Scaffold(
       key: _drawer,
       appBar: AppBar(
         centerTitle: true,
         title: Text('PARKFORU'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        toolbarHeight: 0,
+        backgroundColor: MyConstant.dark,
+        
       ),
       body: Stack(
         children: [
@@ -167,6 +180,7 @@ class _MapUserState extends State<MapUser> {
                 return GoogleMap(
                   mapType: MapType.terrain,
                   myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
                   onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                       target:
@@ -185,7 +199,7 @@ class _MapUserState extends State<MapUser> {
               }
             },
           ),
-          Positioned(
+        /*  Positioned(
             top: 30,
             right: 15,
             left: 15,
@@ -244,6 +258,48 @@ class _MapUserState extends State<MapUser> {
               )),
             ),
           ),
+          Positioned(
+            bottom: 94,
+            right: 12,
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2),
+                color: Colors.white.withOpacity(0.8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+
+                    offset: Offset(1, 1), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Flexible(
+                  child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: IconButton(
+                      onPressed: () {
+                        mapController.animateCamera(CameraUpdate.newLatLng(
+                            LatLng(userLocation.latitude,
+                                userLocation.longitude)));
+                        /*   showDialog(context: context, builder: (context){
+                          return AlertDialog(
+                            content: Text('ffffff'),
+                          );
+                        }); */
+                      },
+                      icon: Icon(Icons.my_location),
+                      color: Colors.black54,
+                      iconSize: 25,
+                    ),
+                  ),
+                ],
+              )),
+            ),
+          ),*/
         ],
       ),
       drawer: Drawer(
@@ -252,50 +308,58 @@ class _MapUserState extends State<MapUser> {
           child: ListView(
             padding: padding,
             children: <Widget>[
-              const SizedBox(
-                height: 50,
+              buildHeader(
+                name: name,
+                caption: caption,
+                onClicked: () => Navigator.of(context).push,
               ),
-              buildSearchField(),
+               buildSearchField(),
               const SizedBox(height: 20),
-              buildMenuItem(
-                text: 'Carpark',
-                icon: Icons.local_parking,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              buildMenuItem(
-                text: 'Gas Station',
-                icon: Icons.local_gas_station,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              buildMenuItem(
-                text: 'EV Station',
-                icon: Icons.ev_station,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Divider(
-                color: Colors.white70,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              buildMenuItem(
-                text: '${widget.name}',
-                icon: Icons.face_outlined,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              buildMenuItem(
-                text: 'Logout',
-                icon: Icons.login_outlined,
-                onClicked: () =>
-                    Navigator.pushNamed(context, MyConstant.routeAuthen),
+              Container(
+                child: Column(
+                  children: [
+                    buildMenuItem(
+                      text: 'Carpark',
+                      icon: Icons.local_parking,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    buildMenuItem(
+                      text: 'Gas Station',
+                      icon: Icons.local_gas_station,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    buildMenuItem(
+                      text: 'EV Station',
+                      icon: Icons.ev_station,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Divider(
+                      color: Colors.white70,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildMenuItem(
+                      text: '${widget.name}',
+                      icon: Icons.face_outlined,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    buildMenuItem(
+                      text: 'Logout',
+                      icon: Icons.login_outlined,
+                      onClicked: () =>
+                          Navigator.pushNamed(context, MyConstant.routeAuthen),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -303,6 +367,43 @@ class _MapUserState extends State<MapUser> {
       ),
     );
   }
+
+  Widget buildHeader({
+    required String name,
+    required String caption,
+    required VoidCallback onClicked,
+  }) =>
+      InkWell(
+        onTap: onClicked,
+        child: Container(
+          padding: padding.add(EdgeInsets.symmetric(vertical: 50)),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: MyConstant.dark,
+                child: ShowImage(path: MyConstant.logo2),
+              ),
+              SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    caption,
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  ),
+                ],
+              ),
+              Spacer(),
+            ],
+          ),
+        ),
+      );
 
   Widget buildMenuItem({
     required String text,
@@ -363,11 +464,23 @@ class _MapUserState extends State<MapUser> {
       )));
     });
     FocusScope.of(context).requestFocus(FocusNode());
+    Navigator.of(context).pop();
   }
 
   void onMapCreated(controller) {
     setState(() {
       mapController = controller;
+    });
+  }
+
+  void _addMarkerOnCameraCenter() {
+    setState(() {
+      markmap.add(Marker(
+        markerId: MarkerId("${markmap.length + 1}"),
+        infoWindow: InfoWindow(title: "Added marker"),
+        icon: BitmapDescriptor.defaultMarker,
+        position: LatLng(userLocation.latitude, userLocation.longitude),
+      ));
     });
   }
 }

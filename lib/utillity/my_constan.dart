@@ -20,7 +20,8 @@ class MyConstant {
   static String image2= 'images/image2.png';
   static String image3= 'images/image3.png';
   static String image4= 'images/image4.png';
-  static String logo= 'images/logotest.png';
+  static String logo= 'images/logo1.png';
+  static String logo2= 'images/logo2.png';
   static String newlogo= 'images/newlogo.png';
   static String logotest= 'images/logobate.png';
 
