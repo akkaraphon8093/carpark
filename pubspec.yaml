@@ -35,6 +35,14 @@ dependencies:
   fluttertoast: ^8.0.8
   geolocator: ^7.4.0
   geocoding: ^2.0.0
+  flutter_launcher_icons: ^0.9.1
+
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "images/logo2.png"
+  adaptive_icon_foreground: "images/logo2.png"
   
 dev_dependencies:
   flutter_test:

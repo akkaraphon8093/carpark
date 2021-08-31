@@ -23,7 +23,7 @@ final Map<String,WidgetBuilder>map ={
 String? initlaRouter;
 
 void main(){
-  initlaRouter = MyConstant.routeMapUser;
+  initlaRouter = MyConstant.routeLoading;
   WidgetsFlutterBinding();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(statusBarColor: Colors.transparent),

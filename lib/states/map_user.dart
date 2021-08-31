@@ -62,12 +62,13 @@ class _MapUserState extends State<MapUser> {
                   builder: (context) {
                     return CupertinoAlertDialog(
                     
-                     title: Text('ที่จอดรถซอยพุฒสี8'),
-                     content: Text('ffffffff'),
+                     title: Text('ที่จอดรถซอยพุฒสี8',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('ซอยพุฒสี 8 แพรกษา อ.เมืองจังหวัดสมุทรปราการ 10280\n Time : -'),
                     );
                     
                   });
-            }),
+            },),
       );
       markmap.add(
         Marker(
@@ -76,6 +77,19 @@ class _MapUserState extends State<MapUser> {
           icon: carparkIcon,
           infoWindow:
               InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ พรวัฒนาซีแอล'),
+          onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('ลานจอดรถ พรวัฒนาซีแอล',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('163 33 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : -'),
+                    );
+                    
+                  });
+            },
         ),
       );
       markmap.add(
@@ -85,6 +99,19 @@ class _MapUserState extends State<MapUser> {
           icon: carparkIcon,
           infoWindow:
               InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ วัดบางนานอก'),
+          onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('ลานจอดรถ วัดบางนานอก',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('ถนนสรรพาวุธ แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 18:00'),
+                    );
+                    
+                  });
+            },
         ),
       );
       markmap.add(
@@ -93,6 +120,19 @@ class _MapUserState extends State<MapUser> {
           position: LatLng(13.67479383466374, 100.60120095938518),
           icon: carparkIcon,
           infoWindow: InfoWindow(title: 'Carpark', snippet: 'อาคารจอดรถ SBC'),
+          onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('อาคารจอดรถ SBC',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('298 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 17:00'),
+                    );
+                    
+                  });
+            },
         ),
       );
       markmap.add(
@@ -102,6 +142,19 @@ class _MapUserState extends State<MapUser> {
           icon: carparkIcon,
           infoWindow:
               InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ ไบเทคบางนา'),
+          onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('ลานจอดรถ ไบเทคบางนา',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('88 ถ. เทพรัตน แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 17:00'),
+                    );
+                    
+                  });
+            },
         ),
       );
     });
@@ -114,6 +167,19 @@ class _MapUserState extends State<MapUser> {
           icon: gasIcon,
           infoWindow:
               InfoWindow(title: 'GasStition', snippet: 'PTT Station สรรพาวุธ'),
+          onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('PTT Station สรรพาวุธ',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('119 121 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260'),
+                    );
+                    
+                  });
+            },
         ),
       );
       markmap.add(
@@ -123,6 +189,19 @@ class _MapUserState extends State<MapUser> {
           icon: gasIcon,
           infoWindow:
               InfoWindow(title: 'GasStation', snippet: 'PTT Station ซอยมังกร'),
+          onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('PTT Station ซอยมังกร',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('ซอย แพรกษา 11 ตำบล แพรกษา อำเภอเมืองสมุทรปราการ สมุทรปราการ 10280'),
+                    );
+                    
+                  });
+            },
         ),
       );
     });
@@ -134,7 +213,20 @@ class _MapUserState extends State<MapUser> {
           position: LatLng(13.64679532518789, 100.64326791409108),
           icon: evIcon,
           infoWindow: InfoWindow(
-              title: 'EV Station', snippet: 'EA Anywhere ซอนศรีด่าน22'),
+              title: 'EV Station', snippet: 'EA Anywhere ซอยศรีด่าน22'),
+          onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('EA Anywhere ซอยศรีด่าน22',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('ซอยศรีด่าน 22 ตำบล บางแก้ว อำเภอบางพลี สมุทรปราการ 10540 \n Time : Open 24 hours'),
+                    );
+                    
+                  });
+            },
         ),
       );
       markmap.add(
@@ -144,6 +236,19 @@ class _MapUserState extends State<MapUser> {
           icon: evIcon,
           infoWindow: InfoWindow(
               title: 'EV Station', snippet: 'PTT Station ทางด่วนบางนา'),
+          onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                    
+                     title: Text('PTT Station ทางด่วนบางนา',style: TextStyle(color: MyConstant.dark),),
+                     
+                     content: Text('359 ซอย พงษ์เวชอนุสรณ์ แขวง บางจาก เขตพระโขนง กรุงเทพมหานคร 10260'),
+                    );
+                    
+                  });
+            },
         ),
       );
     });
@@ -181,6 +286,7 @@ class _MapUserState extends State<MapUser> {
                   mapType: MapType.terrain,
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
+                  trafficEnabled: true,
                   onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                       target:
