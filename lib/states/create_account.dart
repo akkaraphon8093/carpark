@@ -109,7 +109,7 @@ class _CreatAccountState extends State<CreatAccount> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ShowTitle(
-          title: 'Create an account',
+          title: 'สร้างบัญชีผู้ใช้',
           textStlye: MyConstant().h1Style(),
           
         ),
@@ -128,7 +128,7 @@ class _CreatAccountState extends State<CreatAccount> {
             controller: name,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
-              labelText: 'Name :',
+              labelText: 'ชื่อ :',
               prefixIcon: Icon(
                 Icons.badge_outlined,
                 color: MyConstant.dark,
@@ -144,7 +144,7 @@ class _CreatAccountState extends State<CreatAccount> {
             ),
             validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "กรุณากรอกชื่อผู้ใช้งาน";
+                            return "กรุณากรอกชื่อ";
                           } 
                           return null;
                         },
@@ -165,7 +165,7 @@ class _CreatAccountState extends State<CreatAccount> {
             controller: email,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
-              labelText: 'Email :',
+              labelText: 'อีเมล :',
               prefixIcon: Icon(
                 Icons.email_outlined,
                 color: MyConstant.dark,
@@ -181,7 +181,7 @@ class _CreatAccountState extends State<CreatAccount> {
             ),
             validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "กรุณากรอก Email";
+                            return "กรุณากรอกอีเมล";
                           } 
                           return null;
                         },
@@ -202,7 +202,7 @@ class _CreatAccountState extends State<CreatAccount> {
             controller: phone,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
-              labelText: 'PhonNumber :',
+              labelText: 'เบอร์โทรศัพท์ :',
               prefixIcon: Icon(
                 Icons.call_outlined,
                 color: MyConstant.dark,
@@ -239,7 +239,7 @@ class _CreatAccountState extends State<CreatAccount> {
             controller: user,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
-              labelText: 'User :',
+              labelText: 'ชื่อผู้ใช้ :',
               prefixIcon: Icon(
                 Icons.face_outlined,
                 color: MyConstant.dark,
@@ -255,7 +255,7 @@ class _CreatAccountState extends State<CreatAccount> {
             ),
             validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "กรุณากรอก User";
+                            return "กรุณากรอกชื่อผู้";
                           } 
                           return null;
                         },
@@ -293,7 +293,7 @@ class _CreatAccountState extends State<CreatAccount> {
                       ),
               ),
               labelStyle: MyConstant().h3Style(),
-              labelText: 'Password :',
+              labelText: 'รหัสผ่าน :',
               prefixIcon: Icon(
                 Icons.lock_outline,
                 color: MyConstant.dark,
@@ -331,7 +331,7 @@ class _CreatAccountState extends State<CreatAccount> {
             obscureText: statusRedEye,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
-              labelText: 'ConfirmPassword :',
+              labelText: 'ยืนยันรหัสผ่าน :',
               prefixIcon: Icon(
                 Icons.lock,
                 color: MyConstant.dark,
@@ -371,7 +371,7 @@ class _CreatAccountState extends State<CreatAccount> {
             onPressed: () { if (_signup.currentState!.validate())  {
                             signup();
                           }},
-            child: Text('Create account'),
+            child: Text('สร้างบัญชีผู้ใช้'),
           ),
         ),
       ],
@@ -383,7 +383,7 @@ class _CreatAccountState extends State<CreatAccount> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ShowTitle(
-          title: 'Please enter user information.',
+          title: 'กรุณาระบุข้อมูลให้ครบถ้วน.',
           textStlye: MyConstant().h4Style(),
         ),
       ],

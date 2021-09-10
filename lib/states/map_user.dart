@@ -7,14 +7,32 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MapUser extends StatefulWidget {
   final name;
+  final user;
 
-  const MapUser({Key? key, this.name}) : super(key: key);
+  const MapUser({
+    Key? key,
+    this.name,
+    this.user,
+  }) : super(key: key);
 
   @override
   _MapUserState createState() => _MapUserState();
+}
+
+class Mycar {
+  double latitude;
+  double longitude;
+
+  Mycar.arr(
+    Map data,
+  )   : latitude = double.parse(data["latitude"]),
+        longitude = double.parse(data["longitude"]);
 }
 
 class _MapUserState extends State<MapUser> {
@@ -28,10 +46,79 @@ class _MapUserState extends State<MapUser> {
   var carparkIcon;
   var gasIcon;
   var evIcon;
+  var mycarIcon;
   var searchAdd;
+  List<Mycar> _mycar = [];
+
+  Future<List<Mycar>> mycar() async {
+    var res = await http.post(
+      Uri.parse(
+        "http://192.168.1.107/pj/selectMycar.php",
+      ),
+      body: {
+        "user": widget.user,
+      },
+    );
+    List<Mycar> _mycar = [];
+
+    if (res.statusCode == 200) {
+      var arr = json.decode(res.body.toString());
+      for (var getMiniBusData in arr) {
+        _mycar.add(
+          Mycar.arr(getMiniBusData),
+        );
+      }
+    }
+    return _mycar;
+  }
+
+  Future insertMycar() async {
+    var res = await http.post(
+      Uri.parse(
+        "http://192.168.1.107/pj/insertMycar.php",
+      ),
+      body: {
+        "user": widget.user,
+        "latitude": userLocation.latitude.toString(),
+        "longitude": userLocation.longitude.toString(),
+      },
+    );
+
+    var data = json.decode(res.body.toString());
+
+    if (data["code"] == "0") {
+      Fluttertoast.showToast(
+        msg: "เกิดข้อผิดพลาด",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    } else if (data["code"] == "1") {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => new MapUser(
+                name: widget.name,
+                user: widget.user,
+              )));
+      Fluttertoast.showToast(
+        msg: "เพิ่มตำแหน่งรถแล้ว",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    }
+  }
 
   @override
   void initState() {
+    mycar().then((value) {
+      setState(() {
+        _mycar.addAll(value);
+      });
+    });
     super.initState();
     this.markerIcons();
   }
@@ -43,32 +130,45 @@ class _MapUserState extends State<MapUser> {
         ImageConfiguration(devicePixelRatio: 2.0), 'images/gas.png');
     evIcon = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(devicePixelRatio: 2.0), 'images/charging.png');
+    mycarIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 2.0), 'images/mycar.png');
   }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
     setState(() {
+      for (var num = 0; num < _mycar.length; num++) {
+        markmap.add(
+          Marker(
+            markerId: MarkerId("mycar"),
+            position: LatLng(_mycar[num].latitude, _mycar[num].longitude),
+            icon: mycarIcon,
+            infoWindow: InfoWindow(title: 'รถของฉัน'),
+          ),
+        );
+      }
       //ที่จอดรถ
       markmap.add(
         Marker(
-            markerId: MarkerId("P1"),
-            position: LatLng(13.578806435552593, 100.65056822381912),
-            icon: carparkIcon,
-            infoWindow:
-                InfoWindow(title: 'Carpark', snippet: 'ซอยพุฒสี8 แพรกษา'),
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('ที่จอดรถซอยพุฒสี8',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('ซอยพุฒสี 8 แพรกษา อ.เมืองจังหวัดสมุทรปราการ 10280\n Time : -'),
-                    );
-                    
-                  });
-            },),
+          markerId: MarkerId("P1"),
+          position: LatLng(13.578806435552593, 100.65056822381912),
+          icon: carparkIcon,
+          infoWindow: InfoWindow(title: 'Carpark', snippet: 'ซอยพุฒสี8 แพรกษา'),
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'ที่จอดรถซอยพุฒสี8',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        'ซอยพุฒสี 8 แพรกษา อ.เมืองจังหวัดสมุทรปราการ 10280\n Time : -'),
+                  );
+                });
+          },
+        ),
       );
       markmap.add(
         Marker(
@@ -78,18 +178,19 @@ class _MapUserState extends State<MapUser> {
           infoWindow:
               InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ พรวัฒนาซีแอล'),
           onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('ลานจอดรถ พรวัฒนาซีแอล',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('163 33 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : -'),
-                    );
-                    
-                  });
-            },
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'ลานจอดรถ พรวัฒนาซีแอล',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        '163 33 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : -'),
+                  );
+                });
+          },
         ),
       );
       markmap.add(
@@ -100,18 +201,19 @@ class _MapUserState extends State<MapUser> {
           infoWindow:
               InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ วัดบางนานอก'),
           onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('ลานจอดรถ วัดบางนานอก',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('ถนนสรรพาวุธ แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 18:00'),
-                    );
-                    
-                  });
-            },
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'ลานจอดรถ วัดบางนานอก',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        'ถนนสรรพาวุธ แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 18:00'),
+                  );
+                });
+          },
         ),
       );
       markmap.add(
@@ -121,18 +223,19 @@ class _MapUserState extends State<MapUser> {
           icon: carparkIcon,
           infoWindow: InfoWindow(title: 'Carpark', snippet: 'อาคารจอดรถ SBC'),
           onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('อาคารจอดรถ SBC',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('298 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 17:00'),
-                    );
-                    
-                  });
-            },
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'อาคารจอดรถ SBC',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        '298 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 17:00'),
+                  );
+                });
+          },
         ),
       );
       markmap.add(
@@ -143,18 +246,19 @@ class _MapUserState extends State<MapUser> {
           infoWindow:
               InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ ไบเทคบางนา'),
           onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('ลานจอดรถ ไบเทคบางนา',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('88 ถ. เทพรัตน แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 17:00'),
-                    );
-                    
-                  });
-            },
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'ลานจอดรถ ไบเทคบางนา',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        '88 ถ. เทพรัตน แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 17:00'),
+                  );
+                });
+          },
         ),
       );
     });
@@ -168,18 +272,19 @@ class _MapUserState extends State<MapUser> {
           infoWindow:
               InfoWindow(title: 'GasStition', snippet: 'PTT Station สรรพาวุธ'),
           onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('PTT Station สรรพาวุธ',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('119 121 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260'),
-                    );
-                    
-                  });
-            },
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'PTT Station สรรพาวุธ',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        '119 121 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260'),
+                  );
+                });
+          },
         ),
       );
       markmap.add(
@@ -190,18 +295,19 @@ class _MapUserState extends State<MapUser> {
           infoWindow:
               InfoWindow(title: 'GasStation', snippet: 'PTT Station ซอยมังกร'),
           onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('PTT Station ซอยมังกร',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('ซอย แพรกษา 11 ตำบล แพรกษา อำเภอเมืองสมุทรปราการ สมุทรปราการ 10280'),
-                    );
-                    
-                  });
-            },
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'PTT Station ซอยมังกร',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        'ซอย แพรกษา 11 ตำบล แพรกษา อำเภอเมืองสมุทรปราการ สมุทรปราการ 10280'),
+                  );
+                });
+          },
         ),
       );
     });
@@ -215,18 +321,19 @@ class _MapUserState extends State<MapUser> {
           infoWindow: InfoWindow(
               title: 'EV Station', snippet: 'EA Anywhere ซอยศรีด่าน22'),
           onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('EA Anywhere ซอยศรีด่าน22',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('ซอยศรีด่าน 22 ตำบล บางแก้ว อำเภอบางพลี สมุทรปราการ 10540 \n Time : Open 24 hours'),
-                    );
-                    
-                  });
-            },
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'EA Anywhere ซอยศรีด่าน22',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        'ซอยศรีด่าน 22 ตำบล บางแก้ว อำเภอบางพลี สมุทรปราการ 10540 \n Time : Open 24 hours'),
+                  );
+                });
+          },
         ),
       );
       markmap.add(
@@ -237,18 +344,19 @@ class _MapUserState extends State<MapUser> {
           infoWindow: InfoWindow(
               title: 'EV Station', snippet: 'PTT Station ทางด่วนบางนา'),
           onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                    
-                     title: Text('PTT Station ทางด่วนบางนา',style: TextStyle(color: MyConstant.dark),),
-                     
-                     content: Text('359 ซอย พงษ์เวชอนุสรณ์ แขวง บางจาก เขตพระโขนง กรุงเทพมหานคร 10260'),
-                    );
-                    
-                  });
-            },
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text(
+                      'PTT Station ทางด่วนบางนา',
+                      style: TextStyle(color: MyConstant.dark),
+                    ),
+                    content: Text(
+                        '359 ซอย พงษ์เวชอนุสรณ์ แขวง บางจาก เขตพระโขนง กรุงเทพมหานคร 10260'),
+                  );
+                });
+          },
         ),
       );
     });
@@ -274,7 +382,6 @@ class _MapUserState extends State<MapUser> {
         centerTitle: true,
         title: Text('PARKFORU'),
         backgroundColor: MyConstant.dark,
-        
       ),
       body: Stack(
         children: [
@@ -305,107 +412,6 @@ class _MapUserState extends State<MapUser> {
               }
             },
           ),
-        /*  Positioned(
-            top: 30,
-            right: 15,
-            left: 15,
-            child: Container(
-              height: 50,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: MyConstant.dark.withOpacity(0.3),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Flexible(
-                  child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: IconButton(
-                      onPressed: () => _drawer.currentState!.openDrawer(),
-                      icon: Icon(Icons.menu),
-                      color: MyConstant.dark,
-                      iconSize: 30,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 7,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(
-                          left: 15,
-                          top: 15,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          color: MyConstant.dark,
-                          onPressed: searchnavigate,
-                          iconSize: 30,
-                        ),
-                      ),
-                      onChanged: (val) {
-                        setState(() {
-                          searchAdd = val;
-                        });
-                      },
-                    ),
-                  )
-                ],
-              )),
-            ),
-          ),
-          Positioned(
-            bottom: 94,
-            right: 12,
-            child: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(2),
-                color: Colors.white.withOpacity(0.8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
-
-                    offset: Offset(1, 1), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Flexible(
-                  child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: IconButton(
-                      onPressed: () {
-                        mapController.animateCamera(CameraUpdate.newLatLng(
-                            LatLng(userLocation.latitude,
-                                userLocation.longitude)));
-                        /*   showDialog(context: context, builder: (context){
-                          return AlertDialog(
-                            content: Text('ffffff'),
-                          );
-                        }); */
-                      },
-                      icon: Icon(Icons.my_location),
-                      color: Colors.black54,
-                      iconSize: 25,
-                    ),
-                  ),
-                ],
-              )),
-            ),
-          ),*/
         ],
       ),
       drawer: Drawer(
@@ -419,27 +425,27 @@ class _MapUserState extends State<MapUser> {
                 caption: caption,
                 onClicked: () => Navigator.of(context).push,
               ),
-               buildSearchField(),
+              buildSearchField(),
               const SizedBox(height: 20),
               Container(
                 child: Column(
                   children: [
                     buildMenuItem(
-                      text: 'Carpark',
+                      text: 'ที่จอดรถ',
                       icon: Icons.local_parking,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     buildMenuItem(
-                      text: 'Gas Station',
+                      text: 'ปั้มน้ำมัน',
                       icon: Icons.local_gas_station,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     buildMenuItem(
-                      text: 'EV Station',
+                      text: 'อีวีชาร์จ',
                       icon: Icons.ev_station,
                     ),
                     const SizedBox(
@@ -458,8 +464,26 @@ class _MapUserState extends State<MapUser> {
                     const SizedBox(
                       height: 5,
                     ),
+                    if (_mycar.isEmpty) ...{
+                      buildMenuItem(
+                        text: 'เพิ่มตำแหน่งรถของฉัน',
+                        icon: Icons.directions_car,
+                        onClicked: () {
+                          insertMycar();
+                        },
+                      ),
+                    } else ...{
+                      buildMenuItem(
+                        text: 'ลบตำแหน่งรถของฉัน',
+                        icon: Icons.directions_car,
+                        onClicked: () {},
+                      ),
+                    },
+                    const SizedBox(
+                      height: 5,
+                    ),
                     buildMenuItem(
-                      text: 'Logout',
+                      text: 'ออกจากระบบ',
                       icon: Icons.login_outlined,
                       onClicked: () =>
                           Navigator.pushNamed(context, MyConstant.routeAuthen),
@@ -533,7 +557,7 @@ class _MapUserState extends State<MapUser> {
       style: TextStyle(color: color),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        hintText: 'Search',
+        hintText: 'ค้นหา',
         hintStyle: TextStyle(color: color),
         suffixIcon: IconButton(
           icon: Icon(

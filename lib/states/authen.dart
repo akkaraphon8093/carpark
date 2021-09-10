@@ -35,7 +35,7 @@ class _AuthenState extends State<Authen> {
 
     if (data["code"] == "1") {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => new MapUser(name: data["name"])));
+          builder: (BuildContext context) => new MapUser(name: data["name"],user: data["user"],)));
     } else {
       Fluttertoast.showToast(
         msg: "รหัสผ่านหรือชื่อผู้ใช้ไม่ถูกต้อง",
@@ -72,13 +72,13 @@ class _AuthenState extends State<Authen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ShowTitle(
-          title: 'New user?',
+          title: 'ผู้ใช้งานใหม่?',
           textStlye: MyConstant().h4Style(),
         ),
         TextButton(
           onPressed: () =>
               Navigator.pushNamed(context, MyConstant.routeCreatAccount),
-          child: Text('Create an account'),
+          child: Text('สร้างบัญชีผู้ใช้'),
         ),
       ],
     );
@@ -95,7 +95,7 @@ class _AuthenState extends State<Authen> {
             style: MyConstant().myButtonStyle(),
             //onPressed: () {},
             onPressed: () => signin(),
-            child: Text('Login'),
+            child: Text('เข้าสู่ระบบ'),
           ),
         ),
       ],
@@ -113,7 +113,7 @@ class _AuthenState extends State<Authen> {
             controller: user,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
-              labelText: 'User :',
+              labelText: 'ชื่อผู้ใช้ :',
               prefixIcon: Icon(
                 Icons.face,
                 color: MyConstant.dark,
@@ -161,7 +161,7 @@ class _AuthenState extends State<Authen> {
                       ),
               ),
               labelStyle: MyConstant().h3Style(),
-              labelText: 'Password :',
+              labelText: 'รหัสผ่าน :',
               prefixIcon: Icon(
                 Icons.lock,
                 color: MyConstant.dark,
