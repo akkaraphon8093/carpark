@@ -15,6 +15,14 @@ class _TestMapState extends State<TestMap> {
   var mapWidget;
   var controller;
 
+  Set<Marker> markers = {};
+
+   @override
+  void initState() {
+    super.initState();
+    markers = Set.from([]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,9 +30,17 @@ class _TestMapState extends State<TestMap> {
         children: [
           SizedBox(width: 500,height: 500,
             child: GoogleMap(
+              markers: markers,
               onMapCreated: onMapCreated,
               initialCameraPosition:
                   CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 10.0),
+              onTap: (pos){
+                print(pos);
+                Marker m = Marker(markerId: MarkerId('1'),position: pos);
+                setState(() {
+                  markers.add(m);
+                });
+              },
             ),
           ),
           Positioned(

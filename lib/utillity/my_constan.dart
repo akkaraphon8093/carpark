@@ -11,7 +11,7 @@ class MyConstant {
   static String routeCreatAccount = '/creatAccount';
   static String routeBuyerService = '/buyerService';
   static String routeTestMap = '/testMap';
-  static String routeRiderService = '/riderService';
+  static String routeMapAdmin = '/mapAdmin';
   static String routeMapUser = '/mapUser';
   static String routeLoading = '/loading';
 

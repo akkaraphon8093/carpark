@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:carpark/states/map_admin.dart';
 import 'package:carpark/utillity/my_constan.dart';
 import 'package:carpark/widgets/show_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -63,9 +64,9 @@ class _MapUserState extends State<MapUser> {
 
     if (res.statusCode == 200) {
       var arr = json.decode(res.body.toString());
-      for (var getMiniBusData in arr) {
+      for (var getMycar in arr) {
         _mycar.add(
-          Mycar.arr(getMiniBusData),
+          Mycar.arr(getMycar),
         );
       }
     }
@@ -103,6 +104,44 @@ class _MapUserState extends State<MapUser> {
               )));
       Fluttertoast.showToast(
         msg: "เพิ่มตำแหน่งรถแล้ว",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    }
+  }
+
+  Future deleteMycar() async {
+    var res = await http.post(
+      Uri.parse(
+        "http://192.168.1.107/pj/deleteMycar.php",
+      ),
+      body: {
+        "user": widget.user,
+      },
+    );
+
+    var data = json.decode(res.body.toString());
+
+    if (data["code"] == "0") {
+      Fluttertoast.showToast(
+        msg: "เกิดข้อผิดพลาด",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    } else if (data["code"] == "1") {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => new MapUser(
+                name: widget.name,
+                user: widget.user,
+              )));
+      Fluttertoast.showToast(
+        msg: "ลบตำแหน่งรถแล้ว",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -423,40 +462,13 @@ class _MapUserState extends State<MapUser> {
               buildHeader(
                 name: name,
                 caption: caption,
-                onClicked: () => Navigator.of(context).push,
+                onClicked: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>MapAdmin(user: widget.user,name: widget.name,)))
               ),
               buildSearchField(),
               const SizedBox(height: 20),
               Container(
                 child: Column(
                   children: [
-                    buildMenuItem(
-                      text: 'ที่จอดรถ',
-                      icon: Icons.local_parking,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    buildMenuItem(
-                      text: 'ปั้มน้ำมัน',
-                      icon: Icons.local_gas_station,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    buildMenuItem(
-                      text: 'อีวีชาร์จ',
-                      icon: Icons.ev_station,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Divider(
-                      color: Colors.white70,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
                     buildMenuItem(
                       text: '${widget.name}',
                       icon: Icons.face_outlined,
@@ -476,11 +488,26 @@ class _MapUserState extends State<MapUser> {
                       buildMenuItem(
                         text: 'ลบตำแหน่งรถของฉัน',
                         icon: Icons.directions_car,
-                        onClicked: () {},
+                        onClicked: () {
+                          deleteMycar();
+                        },
                       ),
                     },
+                    buildMenuItem(
+                      text: 'เพิ่มสถานที่',
+                      icon: Icons.add_location_alt_outlined,
+                      onClicked: () =>
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>MapAdmin(user: widget.user,name: widget.name,)))
+                    ),
                     const SizedBox(
-                      height: 5,
+                      height: 10,
+                    ),
+                     Divider(
+                      color: Colors.white,
+                      thickness: 1,
+                    ),
+                    const SizedBox(
+                      height: 10,
                     ),
                     buildMenuItem(
                       text: 'ออกจากระบบ',
@@ -600,17 +627,6 @@ class _MapUserState extends State<MapUser> {
   void onMapCreated(controller) {
     setState(() {
       mapController = controller;
-    });
-  }
-
-  void _addMarkerOnCameraCenter() {
-    setState(() {
-      markmap.add(Marker(
-        markerId: MarkerId("${markmap.length + 1}"),
-        infoWindow: InfoWindow(title: "Added marker"),
-        icon: BitmapDescriptor.defaultMarker,
-        position: LatLng(userLocation.latitude, userLocation.longitude),
-      ));
     });
   }
 }
