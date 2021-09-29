@@ -55,6 +55,8 @@ class _MapAdminState extends State<MapAdmin> {
   var gasIcon;
   var evIcon;
   var mycarIcon;
+  var m;
+  var _idlocation;
   Set<Marker> markmap = {};
   List<MarkerLocation> _showMarkerLocation = [];
 
@@ -71,8 +73,64 @@ class _MapAdminState extends State<MapAdmin> {
         "longitude": inmapmark.longitude.toString(),
       },
     );
+    var data = json.decode(res.body);
+    if(data["code"]=="0"){
+      Fluttertoast.showToast(
+        msg: "เกิดข้อผิดพลาด",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    }
+    else if (data["code"] == "1") {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>MapAdmin(user: widget.user,name: widget.name,)));
+      Fluttertoast.showToast(
+        msg: "เพิ่มสถานที่แล้ว",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    }
+  }
+
+  Future deleteLocation(_idlocation) async {
+    print(_idlocation);
+    var res = await http.post(
+      Uri.parse(
+        "http://192.168.1.107/pj/deleteLocation.php",
+      ),
+      body: {
+        "idlocation": _idlocation,
+        
+      },
+    );
 
     var data = json.decode(res.body);
+    if(data["code"]=="0"){
+      Fluttertoast.showToast(
+        msg: "เกิดข้อผิดพลาด",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    }
+    else if (data["code"] == "1") {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>MapAdmin(user: widget.user,name: widget.name,)));
+      Fluttertoast.showToast(
+        msg: "ลบสถานที่แล้ว",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black54,
+        textColor: Colors.white,
+      );
+    }
   }
 
   Future<List<MarkerLocation>> markerLocation() async {
@@ -111,85 +169,121 @@ class _MapAdminState extends State<MapAdmin> {
     mapController = controller;
     setState(() {
       for (var num = 0; num < _showMarkerLocation.length; num++) {
-        if(_showMarkerLocation[num].typelocation == "ที่จอดรถ"){
+        if (_showMarkerLocation[num].typelocation == "ที่จอดรถ") {
           markmap.add(
-          Marker(
-            markerId: MarkerId(_showMarkerLocation[num].idlocation),
-            position: LatLng(_showMarkerLocation[num].latitude, _showMarkerLocation[num].longitude),
-            icon: carparkIcon,
-            infoWindow:
-                InfoWindow(title: _showMarkerLocation[num].typelocation, snippet: _showMarkerLocation[num].namelocation),
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: Text(
-                        _showMarkerLocation[num].namelocation,
-                        style: TextStyle(color: MyConstant.dark),
-                      ),
-                      content: Text(
-                          _showMarkerLocation[num].datalocation),
-                    );
-                  });
-            },
-          ),
-        );
-        }
-        else if (_showMarkerLocation[num].typelocation == "ปั้มน้ำมัน") {
-          markmap.add(
-          Marker(
-            markerId: MarkerId(_showMarkerLocation[num].idlocation),
-            position: LatLng(_showMarkerLocation[num].latitude, _showMarkerLocation[num].longitude),
-            icon: gasIcon,
-            infoWindow:
-                InfoWindow(title: _showMarkerLocation[num].typelocation, snippet: _showMarkerLocation[num].namelocation),
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: Text(
-                        _showMarkerLocation[num].namelocation,
-                        style: TextStyle(color: MyConstant.dark),
-                      ),
-                      content: Text(
-                          _showMarkerLocation[num].datalocation),
-                    );
-                  });
-            },
-          ),
-        );
-          
-        }
+            Marker(
+              markerId: MarkerId(_showMarkerLocation[num].idlocation),
+              position: LatLng(_showMarkerLocation[num].latitude,
+                  _showMarkerLocation[num].longitude),
+              icon: carparkIcon,
+              infoWindow: InfoWindow(
+                  title: _showMarkerLocation[num].typelocation,
+                  snippet: _showMarkerLocation[num].namelocation),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text(
+                          _showMarkerLocation[num].namelocation,
+                          style: TextStyle(color: MyConstant.dark),
+                        ),
+                        content: Text(_showMarkerLocation[num].datalocation),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                              'ลบข้อมูล',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              deleteLocation(_idlocation = _showMarkerLocation[num].idlocation);
+                              Navigator.of(context).pop();
 
-        else if (_showMarkerLocation[num].typelocation == "อีวีชาร์จ") {
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
+            ),
+          );
+        } else if (_showMarkerLocation[num].typelocation == "ปั้มน้ำมัน") {
           markmap.add(
-          Marker(
-            markerId: MarkerId(_showMarkerLocation[num].idlocation),
-            position: LatLng(_showMarkerLocation[num].latitude, _showMarkerLocation[num].longitude),
-            icon: evIcon,
-            infoWindow:
-                InfoWindow(title: _showMarkerLocation[num].typelocation, snippet: _showMarkerLocation[num].namelocation),
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: Text(
-                        _showMarkerLocation[num].namelocation,
-                        style: TextStyle(color: MyConstant.dark),
-                      ),
-                      content: Text(
-                          _showMarkerLocation[num].datalocation),
-                    );
-                  });
-            },
-          ),
-        );
-          
+            Marker(
+              markerId: MarkerId(_showMarkerLocation[num].idlocation),
+              position: LatLng(_showMarkerLocation[num].latitude,
+                  _showMarkerLocation[num].longitude),
+              icon: gasIcon,
+              infoWindow: InfoWindow(
+                  title: _showMarkerLocation[num].typelocation,
+                  snippet: _showMarkerLocation[num].namelocation),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text(
+                          _showMarkerLocation[num].namelocation,
+                          style: TextStyle(color: MyConstant.dark),
+                        ),
+                        content: Text(_showMarkerLocation[num].datalocation),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                              'ลบข้อมูล',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              deleteLocation(_idlocation = _showMarkerLocation[num].idlocation);
+                              Navigator.of(context).pop();
+
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
+            ),
+          );
+        } else if (_showMarkerLocation[num].typelocation == "อีวีชาร์จ") {
+          markmap.add(
+            Marker(
+              markerId: MarkerId(_showMarkerLocation[num].idlocation),
+              position: LatLng(_showMarkerLocation[num].latitude,
+                  _showMarkerLocation[num].longitude),
+              icon: evIcon,
+              infoWindow: InfoWindow(
+                  title: _showMarkerLocation[num].typelocation,
+                  snippet: _showMarkerLocation[num].namelocation),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text(
+                          _showMarkerLocation[num].namelocation,
+                          style: TextStyle(color: MyConstant.dark),
+                        ),
+                        content: Text(_showMarkerLocation[num].datalocation),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                              'ลบข้อมูล',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              deleteLocation(_idlocation = _showMarkerLocation[num].idlocation);
+                              Navigator.of(context).pop();
+
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
+            ),
+          );
         }
-        
       }
     });
   }
@@ -236,6 +330,7 @@ class _MapAdminState extends State<MapAdmin> {
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   trafficEnabled: true,
+                  zoomControlsEnabled: false,
                   onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                       target:
@@ -243,6 +338,15 @@ class _MapAdminState extends State<MapAdmin> {
                       zoom: 15),
                   markers: markmap,
                   onTap: (inmapmark) {
+                    Fluttertoast.showToast(
+                      msg: "แตะที่มาร์คเกอร์เพื่อเพิ่มข้อมูล",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black54,
+                      textColor: Colors.white,
+                    );
+
                     print(inmapmark);
                     Marker m = Marker(
                       markerId: MarkerId('1'),
@@ -255,7 +359,7 @@ class _MapAdminState extends State<MapAdmin> {
                                   builder: (context, setState) {
                                 return AlertDialog(
                                   title: Text(
-                                    'เพิ่มสถานที่${inmapmark.latitude} ${inmapmark.longitude}',
+                                    'เพิ่มสถานที่',
                                     style: TextStyle(
                                         color: MyConstant.dark, fontSize: 24),
                                   ),
@@ -264,72 +368,85 @@ class _MapAdminState extends State<MapAdmin> {
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          DropdownButtonFormField<String>(
-                                            decoration: InputDecoration(
-                                              hintStyle: TextStyle(
-                                                fontFamily: "Mitr",
+                                          Container(
+                                            child:
+                                                DropdownButtonFormField<String>(
+                                              decoration: InputDecoration(
+                                                hintStyle: TextStyle(
+                                                  fontFamily: "Mitr",
+                                                ),
+                                                border: OutlineInputBorder(),
+                                                labelText: "สถานที่",
+                                                labelStyle: TextStyle(
+                                                  fontFamily: "Mitr",
+                                                ),
+                                                isDense: true,
                                               ),
-                                              border: OutlineInputBorder(),
-                                              labelText: "สถานที่",
-                                              labelStyle: TextStyle(
-                                                fontFamily: "Mitr",
-                                              ),
-                                              isDense: true,
-                                            ),
-                                            items: [
-                                              "ที่จอดรถ",
-                                              "ปั้มน้ำมัน",
-                                              "อีวีชาร์จ",
-                                            ]
-                                                .map(
-                                                  (label) =>
-                                                      DropdownMenuItem<String>(
-                                                    child: Text(
-                                                      label,
-                                                      style: TextStyle(
-                                                        fontFamily: "Mitr",
+                                              items: [
+                                                "ที่จอดรถ",
+                                                "ปั้มน้ำมัน",
+                                                "อีวีชาร์จ",
+                                              ]
+                                                  .map(
+                                                    (label) => DropdownMenuItem<
+                                                        String>(
+                                                      child: Text(
+                                                        label,
+                                                        style: TextStyle(
+                                                          fontFamily: "Mitr",
+                                                        ),
                                                       ),
+                                                      value: label,
                                                     ),
-                                                    value: label,
-                                                  ),
-                                                )
-                                                .toList(),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _typeLocation = value;
-                                              });
-                                            },
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return "กรุณาเลือกสถานที่";
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          TextFormField(
-                                            controller: _nameLocation,
-                                            validator: (value) {
-                                              return value!.isNotEmpty
-                                                  ? null
-                                                  : "กรุณากรอกข้อมูล";
-                                            },
-                                            decoration: InputDecoration(
-                                                hintText: "ชื่อสถานที่"),
-                                          ),
-                                          TextFormField(
-                                            controller: _dataLocation,
-                                            maxLines: 4,
-                                            validator: (value) {
-                                              return value!.isNotEmpty
-                                                  ? null
-                                                  : "กรุณากรอกข้อมูล";
-                                            },
-                                            decoration: InputDecoration(
-                                              hintText: "รายละเอียดสถานที่",
+                                                  )
+                                                  .toList(),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _typeLocation = value;
+                                                });
+                                              },
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "กรุณาเลือกสถานที่";
+                                                }
+                                                return null;
+                                              },
                                             ),
-                                            keyboardType:
-                                                TextInputType.multiline,
+                                            margin: EdgeInsets.all(5),
+                                          ),
+                                          Container(
+                                            child: TextFormField(
+                                              controller: _nameLocation,
+                                              validator: (value) {
+                                                return value!.isNotEmpty
+                                                    ? null
+                                                    : "กรุณากรอกข้อมูล";
+                                              },
+                                              decoration: InputDecoration(
+                                                labelText: "ชื่อสถานที่",
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                            margin: EdgeInsets.all(5),
+                                          ),
+                                          Container(
+                                            child: TextFormField(
+                                              controller: _dataLocation,
+                                              maxLines: 4,
+                                              validator: (value) {
+                                                return value!.isNotEmpty
+                                                    ? null
+                                                    : "กรุณากรอกข้อมูล";
+                                              },
+                                              decoration: InputDecoration(
+                                                labelText: "รายละเอียดสถานที่",
+                                                border: OutlineInputBorder(),
+                                              ),
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                            ),
+                                            margin: EdgeInsets.all(5),
                                           ),
                                         ],
                                       )),
@@ -342,6 +459,12 @@ class _MapAdminState extends State<MapAdmin> {
                                           Navigator.of(context).pop();
                                           insertLocation(inmapmark);
                                         }
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text('ยกเลิก'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
                                       },
                                     ),
                                   ],
@@ -368,6 +491,14 @@ class _MapAdminState extends State<MapAdmin> {
           ),
         ],
       ),
+    /*  floatingActionButton: new Visibility(
+        visible: true,
+        child: new FloatingActionButton(
+          onPressed: () {},
+          tooltip: 'Increment',
+          child: new Icon(Icons.add),
+        ),
+      ),*/
       drawer: Drawer(
         child: Material(
           color: MyConstant.dark,
@@ -386,24 +517,21 @@ class _MapAdminState extends State<MapAdmin> {
                 child: Column(
                   children: [
                     buildMenuItem(
-                      text: 'เพิ่มที่จอดรถ',
+                      text: 'ที่จอดรถ',
                       icon: Icons.local_parking,
-                      onClicked: () async {
-                        Navigator.of(context).pop();
-                      },
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     buildMenuItem(
-                      text: 'เพิ่มปั้มน้ำมัน',
+                      text: 'ปั้มน้ำมัน',
                       icon: Icons.local_gas_station,
                     ),
                     const SizedBox(
                       height: 5,
                     ),
                     buildMenuItem(
-                      text: 'เพิ่มอีวีชาร์จ',
+                      text: 'อีวีชาร์จ',
                       icon: Icons.ev_station,
                     ),
                     const SizedBox(

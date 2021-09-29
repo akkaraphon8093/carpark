@@ -26,6 +26,24 @@ class MapUser extends StatefulWidget {
   _MapUserState createState() => _MapUserState();
 }
 
+class MarkerLocation {
+  String idlocation;
+  String typelocation;
+  String namelocation;
+  String datalocation;
+  double latitude;
+  double longitude;
+
+  MarkerLocation.arr(
+    Map data,
+  )   : idlocation = data["idlocation"].toString(),
+        typelocation = data["typelocation"].toString(),
+        namelocation = data["namelocation"].toString(),
+        datalocation = data["datalocation"].toString(),
+        latitude = double.parse(data["latitude"]),
+        longitude = double.parse(data["longitude"]);
+}
+
 class Mycar {
   double latitude;
   double longitude;
@@ -50,6 +68,7 @@ class _MapUserState extends State<MapUser> {
   var mycarIcon;
   var searchAdd;
   List<Mycar> _mycar = [];
+  List<MarkerLocation> _showMarkerLocation = [];
 
   Future<List<Mycar>> mycar() async {
     var res = await http.post(
@@ -71,6 +90,27 @@ class _MapUserState extends State<MapUser> {
       }
     }
     return _mycar;
+  }
+
+  Future<List<MarkerLocation>> markerLocation() async {
+    var res = await http.post(
+      Uri.parse(
+        "http://192.168.1.107/pj/selectLocation.php",
+      ),
+    );
+
+    List<MarkerLocation> _showMarkerLocation = [];
+
+    if (res.statusCode == 200 && res.body.isNotEmpty) {
+      var arr = json.decode(res.body.toString());
+      print(res.body);
+      for (var _getMarkerLocation in arr) {
+        _showMarkerLocation.add(
+          MarkerLocation.arr(_getMarkerLocation),
+        );
+      }
+    }
+    return _showMarkerLocation;
   }
 
   Future insertMycar() async {
@@ -160,6 +200,9 @@ class _MapUserState extends State<MapUser> {
     });
     super.initState();
     this.markerIcons();
+    markerLocation().then((value) {
+      _showMarkerLocation.addAll(value);
+    });
   }
 
   void markerIcons() async {
@@ -186,218 +229,86 @@ class _MapUserState extends State<MapUser> {
           ),
         );
       }
-      //ที่จอดรถ
-      markmap.add(
-        Marker(
-          markerId: MarkerId("P1"),
-          position: LatLng(13.578806435552593, 100.65056822381912),
-          icon: carparkIcon,
-          infoWindow: InfoWindow(title: 'Carpark', snippet: 'ซอยพุฒสี8 แพรกษา'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'ที่จอดรถซอยพุฒสี8',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        'ซอยพุฒสี 8 แพรกษา อ.เมืองจังหวัดสมุทรปราการ 10280\n Time : -'),
-                  );
-                });
-          },
-        ),
-      );
-      markmap.add(
-        Marker(
-          markerId: MarkerId("P2"),
-          position: LatLng(13.673677928287058, 100.60031897355654),
-          icon: carparkIcon,
-          infoWindow:
-              InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ พรวัฒนาซีแอล'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'ลานจอดรถ พรวัฒนาซีแอล',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        '163 33 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : -'),
-                  );
-                });
-          },
-        ),
-      );
-      markmap.add(
-        Marker(
-          markerId: MarkerId("P3"),
-          position: LatLng(13.676693461500971, 100.58804024985879),
-          icon: carparkIcon,
-          infoWindow:
-              InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ วัดบางนานอก'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'ลานจอดรถ วัดบางนานอก',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        'ถนนสรรพาวุธ แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 18:00'),
-                  );
-                });
-          },
-        ),
-      );
-      markmap.add(
-        Marker(
-          markerId: MarkerId("P4"),
-          position: LatLng(13.67479383466374, 100.60120095938518),
-          icon: carparkIcon,
-          infoWindow: InfoWindow(title: 'Carpark', snippet: 'อาคารจอดรถ SBC'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'อาคารจอดรถ SBC',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        '298 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 17:00'),
-                  );
-                });
-          },
-        ),
-      );
-      markmap.add(
-        Marker(
-          markerId: MarkerId("P5"),
-          position: LatLng(13.671553762345583, 100.61055903771953),
-          icon: carparkIcon,
-          infoWindow:
-              InfoWindow(title: 'Carpark', snippet: 'ลานจอดรถ ไบเทคบางนา'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'ลานจอดรถ ไบเทคบางนา',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        '88 ถ. เทพรัตน แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260\n Time : 08:00 - 17:00'),
-                  );
-                });
-          },
-        ),
-      );
     });
     setState(() {
-      //ปั้มน้ำมัน
-      markmap.add(
-        Marker(
-          markerId: MarkerId("G1"),
-          position: LatLng(13.675588145334846, 100.59506391645068),
-          icon: gasIcon,
-          infoWindow:
-              InfoWindow(title: 'GasStition', snippet: 'PTT Station สรรพาวุธ'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'PTT Station สรรพาวุธ',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        '119 121 ซ. นภาลัย 12 แขวง บางนา เขตบางนา กรุงเทพมหานคร 10260'),
-                  );
-                });
-          },
-        ),
-      );
-      markmap.add(
-        Marker(
-          markerId: MarkerId("G2"),
-          position: LatLng(13.580862188966835, 100.65592970937084),
-          icon: gasIcon,
-          infoWindow:
-              InfoWindow(title: 'GasStation', snippet: 'PTT Station ซอยมังกร'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'PTT Station ซอยมังกร',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        'ซอย แพรกษา 11 ตำบล แพรกษา อำเภอเมืองสมุทรปราการ สมุทรปราการ 10280'),
-                  );
-                });
-          },
-        ),
-      );
-    });
-    setState(() {
-      //EV
-      markmap.add(
-        Marker(
-          markerId: MarkerId("E1"),
-          position: LatLng(13.64679532518789, 100.64326791409108),
-          icon: evIcon,
-          infoWindow: InfoWindow(
-              title: 'EV Station', snippet: 'EA Anywhere ซอยศรีด่าน22'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'EA Anywhere ซอยศรีด่าน22',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        'ซอยศรีด่าน 22 ตำบล บางแก้ว อำเภอบางพลี สมุทรปราการ 10540 \n Time : Open 24 hours'),
-                  );
-                });
-          },
-        ),
-      );
-      markmap.add(
-        Marker(
-          markerId: MarkerId("E2"),
-          position: LatLng(13.686689238666304, 100.60174509022717),
-          icon: evIcon,
-          infoWindow: InfoWindow(
-              title: 'EV Station', snippet: 'PTT Station ทางด่วนบางนา'),
-          onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return CupertinoAlertDialog(
-                    title: Text(
-                      'PTT Station ทางด่วนบางนา',
-                      style: TextStyle(color: MyConstant.dark),
-                    ),
-                    content: Text(
-                        '359 ซอย พงษ์เวชอนุสรณ์ แขวง บางจาก เขตพระโขนง กรุงเทพมหานคร 10260'),
-                  );
-                });
-          },
-        ),
-      );
+      for (var num = 0; num < _showMarkerLocation.length; num++) {
+        if (_showMarkerLocation[num].typelocation == "ที่จอดรถ") {
+          markmap.add(
+            Marker(
+              markerId: MarkerId(_showMarkerLocation[num].idlocation),
+              position: LatLng(_showMarkerLocation[num].latitude,
+                  _showMarkerLocation[num].longitude),
+              icon: carparkIcon,
+              infoWindow: InfoWindow(
+                  title: _showMarkerLocation[num].typelocation,
+                  snippet: _showMarkerLocation[num].namelocation),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text(
+                          _showMarkerLocation[num].namelocation,
+                          style: TextStyle(color: MyConstant.dark),
+                        ),
+                        content: Text(_showMarkerLocation[num].datalocation),
+                      );
+                    });
+              },
+            ),
+          );
+        } else if (_showMarkerLocation[num].typelocation == "ปั้มน้ำมัน") {
+          markmap.add(
+            Marker(
+              markerId: MarkerId(_showMarkerLocation[num].idlocation),
+              position: LatLng(_showMarkerLocation[num].latitude,
+                  _showMarkerLocation[num].longitude),
+              icon: gasIcon,
+              infoWindow: InfoWindow(
+                  title: _showMarkerLocation[num].typelocation,
+                  snippet: _showMarkerLocation[num].namelocation),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text(
+                          _showMarkerLocation[num].namelocation,
+                          style: TextStyle(color: MyConstant.dark),
+                        ),
+                        content: Text(_showMarkerLocation[num].datalocation),
+                      );
+                    });
+              },
+            ),
+          );
+        } else if (_showMarkerLocation[num].typelocation == "อีวีชาร์จ") {
+          markmap.add(
+            Marker(
+              markerId: MarkerId(_showMarkerLocation[num].idlocation),
+              position: LatLng(_showMarkerLocation[num].latitude,
+                  _showMarkerLocation[num].longitude),
+              icon: evIcon,
+              infoWindow: InfoWindow(
+                  title: _showMarkerLocation[num].typelocation,
+                  snippet: _showMarkerLocation[num].namelocation),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text(
+                          _showMarkerLocation[num].namelocation,
+                          style: TextStyle(color: MyConstant.dark),
+                        ),
+                        content: Text(_showMarkerLocation[num].datalocation),
+                      );
+                    });
+              },
+            ),
+          );
+        }
+      }
     });
   }
 
@@ -414,7 +325,7 @@ class _MapUserState extends State<MapUser> {
   @override
   Widget build(BuildContext context) {
     final name = 'PARKFORU';
-    final caption = 'Sanpawut Road';
+    final caption = 'จอดที่ไหนดี?';
     return Scaffold(
       key: _drawer,
       appBar: AppBar(
@@ -433,6 +344,7 @@ class _MapUserState extends State<MapUser> {
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   trafficEnabled: true,
+                  zoomControlsEnabled: false,
                   onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                       target:
@@ -460,10 +372,15 @@ class _MapUserState extends State<MapUser> {
             padding: padding,
             children: <Widget>[
               buildHeader(
-                name: name,
-                caption: caption,
-                onClicked: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>MapAdmin(user: widget.user,name: widget.name,)))
-              ),
+                  name: name,
+                  caption: caption,
+                  onClicked: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MapAdmin(
+                                user: widget.user,
+                                name: widget.name,
+                              )))),
               buildSearchField(),
               const SizedBox(height: 20),
               Container(
@@ -494,15 +411,29 @@ class _MapUserState extends State<MapUser> {
                       ),
                     },
                     buildMenuItem(
-                      text: 'เพิ่มสถานที่',
-                      icon: Icons.add_location_alt_outlined,
-                      onClicked: () =>
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>MapAdmin(user: widget.user,name: widget.name,)))
-                    ),
+                        text: 'เพิ่มสถานที่',
+                        icon: Icons.add_location_alt_outlined,
+                        onClicked: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MapAdmin(
+                                        user: widget.user,
+                                        name: widget.name,
+                                      )));
+                          Fluttertoast.showToast(
+                            msg: "กรุณาแตะที่แผนที่เพื่อมาร์คตำแหน่งสถานที่",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.black54,
+                            textColor: Colors.white,
+                          );
+                        }),
                     const SizedBox(
                       height: 10,
                     ),
-                     Divider(
+                    Divider(
                       color: Colors.white,
                       thickness: 1,
                     ),

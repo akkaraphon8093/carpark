@@ -17,6 +17,7 @@ class Authen extends StatefulWidget {
 
 class _AuthenState extends State<Authen> {
   bool statusRedEye = true; //showpass
+  var _signin = GlobalKey<FormState>();
 
   TextEditingController user = TextEditingController();
   TextEditingController pass = TextEditingController();
@@ -52,17 +53,15 @@ class _AuthenState extends State<Authen> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          children: [
+      body: SafeArea(child:
+       Form(key: _signin, child: ListView(children: [
             buildImage(size),
             buildAppName(),
             buildUser(size),
             buildPassword(size),
             buildLogin(size),
             bulidCreateAccount()
-          ],
-        ),
+          ],),)
       ),
     );
   }
@@ -94,7 +93,9 @@ class _AuthenState extends State<Authen> {
           child: ElevatedButton(
             style: MyConstant().myButtonStyle(),
             //onPressed: () {},
-            onPressed: () => signin(),
+            onPressed: () {if (_signin.currentState!.validate())  {
+                            signin();
+                          }},
             child: Text('เข้าสู่ระบบ'),
           ),
         ),
@@ -127,6 +128,12 @@ class _AuthenState extends State<Authen> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
+            validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "กรุณากรอกชื่อผู้ใช้";
+                          } 
+                          return null;
+                        },
           ),
         ),
       ],
@@ -175,6 +182,12 @@ class _AuthenState extends State<Authen> {
                 borderRadius: BorderRadius.circular(25),
               ),
             ),
+            validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "กรุณากรอกรหัสผ่าน";
+                          } 
+                          return null;
+                        },
           ),
         ),
       ],
@@ -186,7 +199,7 @@ class _AuthenState extends State<Authen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ShowTitle(
-          title: 'PARKFORU (Sanpawut)',
+          title: 'PARKFORU',
           textStlye: MyConstant().h2Style(),
         ),
       ],
