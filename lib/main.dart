@@ -1,6 +1,7 @@
 import 'package:carpark/states/authen.dart';
 import 'package:carpark/states/buyer_service.dart';
 import 'package:carpark/states/create_account.dart';
+import 'package:carpark/states/edit_account.dart';
 import 'package:carpark/states/loading.dart';
 import 'package:carpark/states/map_user.dart';
 import 'package:carpark/states/map_admin.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/services.dart';
 final Map<String,WidgetBuilder>map ={
   '/authen':(BuildContext context)=>Authen(),
   '/creatAccount':(BuildContext context)=> CreatAccount(),
+  '/editAccount':(BuildContext context)=> EditAccount(),
   '/buyerService':(BuildContext context)=>BuyerService(),
   '/testMap':(BuildContext context)=>TestMap(),
   '/mapAdmin':(BuildContext context)=>MapAdmin(),
@@ -23,7 +25,7 @@ final Map<String,WidgetBuilder>map ={
 String? initlaRouter;
 
 void main(){
-  initlaRouter = MyConstant.routeLoading;
+  initlaRouter = MyConstant.routeAuthen;
   WidgetsFlutterBinding();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(statusBarColor: Colors.transparent),

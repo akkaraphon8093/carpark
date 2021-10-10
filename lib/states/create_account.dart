@@ -16,12 +16,6 @@ class CreatAccount extends StatefulWidget {
 
 class _CreatAccountState extends State<CreatAccount> {
   bool statusRedEye = true; //showpass
-  var _name = GlobalKey<FormState>();
-  var _email = GlobalKey<FormState>();
-  var _phone = GlobalKey<FormState>();
-  var _user = GlobalKey<FormState>();
-  var _pass = GlobalKey<FormState>();
-  var _cpass = GlobalKey<FormState>();
   var _signup = GlobalKey<FormState>();
 
   TextEditingController name = TextEditingController();
@@ -200,6 +194,7 @@ class _CreatAccountState extends State<CreatAccount> {
           width: size * 0.6,
           child: TextFormField(
             controller: phone,
+            maxLength: 10,
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
               labelText: 'เบอร์โทรศัพท์ :',

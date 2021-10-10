@@ -15,7 +15,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 class MapAdmin extends StatefulWidget {
   final user;
   final name;
-  const MapAdmin({Key? key, this.user, this.name}) : super(key: key);
+  final status;
+  const MapAdmin({Key? key, this.user, this.name, this.status}) : super(key: key);
 
   @override
   _MapAdminState createState() => _MapAdminState();
@@ -74,7 +75,7 @@ class _MapAdminState extends State<MapAdmin> {
       },
     );
     var data = json.decode(res.body);
-    if(data["code"]=="0"){
+    if (data["code"] == "0") {
       Fluttertoast.showToast(
         msg: "เกิดข้อผิดพลาด",
         toastLength: Toast.LENGTH_SHORT,
@@ -83,9 +84,14 @@ class _MapAdminState extends State<MapAdmin> {
         backgroundColor: Colors.black54,
         textColor: Colors.white,
       );
-    }
-    else if (data["code"] == "1") {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>MapAdmin(user: widget.user,name: widget.name,)));
+    } else if (data["code"] == "1") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MapAdmin(
+                    user: widget.user,
+                    name: widget.name,
+                  )));
       Fluttertoast.showToast(
         msg: "เพิ่มสถานที่แล้ว",
         toastLength: Toast.LENGTH_SHORT,
@@ -97,6 +103,21 @@ class _MapAdminState extends State<MapAdmin> {
     }
   }
 
+  Future _refresh() async{       
+    return GoogleMap(
+                    mapType: MapType.terrain,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
+                    trafficEnabled: true,
+                    zoomControlsEnabled: false,
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                        target:
+                            LatLng(userLocation.latitude, userLocation.longitude),
+                        zoom: 15),
+                    markers: markmap,);
+  }
+
   Future deleteLocation(_idlocation) async {
     print(_idlocation);
     var res = await http.post(
@@ -105,12 +126,11 @@ class _MapAdminState extends State<MapAdmin> {
       ),
       body: {
         "idlocation": _idlocation,
-        
       },
     );
 
     var data = json.decode(res.body);
-    if(data["code"]=="0"){
+    if (data["code"] == "0") {
       Fluttertoast.showToast(
         msg: "เกิดข้อผิดพลาด",
         toastLength: Toast.LENGTH_SHORT,
@@ -119,9 +139,14 @@ class _MapAdminState extends State<MapAdmin> {
         backgroundColor: Colors.black54,
         textColor: Colors.white,
       );
-    }
-    else if (data["code"] == "1") {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>MapAdmin(user: widget.user,name: widget.name,)));
+    } else if (data["code"] == "1") {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MapAdmin(
+                    user: widget.user,
+                    name: widget.name,
+                  )));
       Fluttertoast.showToast(
         msg: "ลบสถานที่แล้ว",
         toastLength: Toast.LENGTH_SHORT,
@@ -139,7 +164,6 @@ class _MapAdminState extends State<MapAdmin> {
         "http://192.168.1.107/pj/selectLocation.php",
       ),
     );
-
     List<MarkerLocation> _showMarkerLocation = [];
 
     if (res.statusCode == 200 && res.body.isNotEmpty) {
@@ -151,7 +175,7 @@ class _MapAdminState extends State<MapAdmin> {
         );
       }
     }
-    return _showMarkerLocation;
+    return _showMarkerLocation; 
   }
 
   void markerIcons() async {
@@ -196,9 +220,9 @@ class _MapAdminState extends State<MapAdmin> {
                               style: TextStyle(color: Colors.red),
                             ),
                             onPressed: () {
-                              deleteLocation(_idlocation = _showMarkerLocation[num].idlocation);
+                              deleteLocation(_idlocation =
+                                  _showMarkerLocation[num].idlocation);
                               Navigator.of(context).pop();
-
                             },
                           ),
                         ],
@@ -234,9 +258,9 @@ class _MapAdminState extends State<MapAdmin> {
                               style: TextStyle(color: Colors.red),
                             ),
                             onPressed: () {
-                              deleteLocation(_idlocation = _showMarkerLocation[num].idlocation);
+                              deleteLocation(_idlocation =
+                                  _showMarkerLocation[num].idlocation);
                               Navigator.of(context).pop();
-
                             },
                           ),
                         ],
@@ -272,9 +296,9 @@ class _MapAdminState extends State<MapAdmin> {
                               style: TextStyle(color: Colors.red),
                             ),
                             onPressed: () {
-                              deleteLocation(_idlocation = _showMarkerLocation[num].idlocation);
+                              deleteLocation(_idlocation =
+                                  _showMarkerLocation[num].idlocation);
                               Navigator.of(context).pop();
-
                             },
                           ),
                         ],
@@ -310,7 +334,7 @@ class _MapAdminState extends State<MapAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    final name = 'PARKFORU';
+    final name = 'CarparkForU';
     final caption = 'เพิ่มสถานที่';
     return Scaffold(
       key: _drawer,
@@ -326,157 +350,159 @@ class _MapAdminState extends State<MapAdmin> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 return GoogleMap(
-                  mapType: MapType.terrain,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                  trafficEnabled: true,
-                  zoomControlsEnabled: false,
-                  onMapCreated: _onMapCreated,
-                  initialCameraPosition: CameraPosition(
-                      target:
-                          LatLng(userLocation.latitude, userLocation.longitude),
-                      zoom: 15),
-                  markers: markmap,
-                  onTap: (inmapmark) {
-                    Fluttertoast.showToast(
-                      msg: "แตะที่มาร์คเกอร์เพื่อเพิ่มข้อมูล",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.black54,
-                      textColor: Colors.white,
-                    );
-
-                    print(inmapmark);
-                    Marker m = Marker(
-                      markerId: MarkerId('1'),
-                      position: LatLng(inmapmark.latitude, inmapmark.longitude),
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return StatefulBuilder(
-                                  builder: (context, setState) {
-                                return AlertDialog(
-                                  title: Text(
-                                    'เพิ่มสถานที่',
-                                    style: TextStyle(
-                                        color: MyConstant.dark, fontSize: 24),
-                                  ),
-                                  content: Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            child:
-                                                DropdownButtonFormField<String>(
-                                              decoration: InputDecoration(
-                                                hintStyle: TextStyle(
-                                                  fontFamily: "Mitr",
+                    mapType: MapType.terrain,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
+                    trafficEnabled: true,
+                    zoomControlsEnabled: false,
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                        target:
+                            LatLng(userLocation.latitude, userLocation.longitude),
+                        zoom: 15),
+                    markers: markmap,
+                    onTap: (inmapmark) {
+                      Fluttertoast.showToast(
+                        msg: "แตะที่มาร์คเกอร์เพื่อเพิ่มข้อมูล",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black54,
+                        textColor: Colors.white,
+                      );
+                
+                      print(inmapmark);
+                      Marker m = Marker(
+                        markerId: MarkerId('1'),
+                        position: LatLng(inmapmark.latitude, inmapmark.longitude),
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return StatefulBuilder(
+                                    builder: (context, setState) {
+                                  return AlertDialog(
+                                    title: Text(
+                                      'เพิ่มสถานที่',
+                                      style: TextStyle(
+                                          color: MyConstant.dark, fontSize: 24),
+                                    ),
+                                    content: Form(
+                                        key: _formKey,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                              child:
+                                                  DropdownButtonFormField<String>(
+                                                decoration: InputDecoration(
+                                                  hintStyle: TextStyle(
+                                                    fontFamily: "Mitr",
+                                                  ),
+                                                  border: OutlineInputBorder(),
+                                                  labelText: "สถานที่",
+                                                  labelStyle: TextStyle(
+                                                    fontFamily: "Mitr",
+                                                  ),
+                                                  isDense: true,
                                                 ),
-                                                border: OutlineInputBorder(),
-                                                labelText: "สถานที่",
-                                                labelStyle: TextStyle(
-                                                  fontFamily: "Mitr",
-                                                ),
-                                                isDense: true,
-                                              ),
-                                              items: [
-                                                "ที่จอดรถ",
-                                                "ปั้มน้ำมัน",
-                                                "อีวีชาร์จ",
-                                              ]
-                                                  .map(
-                                                    (label) => DropdownMenuItem<
-                                                        String>(
-                                                      child: Text(
-                                                        label,
-                                                        style: TextStyle(
-                                                          fontFamily: "Mitr",
+                                                items: [
+                                                  "ที่จอดรถ",
+                                                  "ปั้มน้ำมัน",
+                                                  "อีวีชาร์จ",
+                                                ]
+                                                    .map(
+                                                      (label) => DropdownMenuItem<
+                                                          String>(
+                                                        child: Text(
+                                                          label,
+                                                          style: TextStyle(
+                                                            fontFamily: "Mitr",
+                                                          ),
                                                         ),
+                                                        value: label,
                                                       ),
-                                                      value: label,
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  _typeLocation = value;
-                                                });
-                                              },
-                                              validator: (value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return "กรุณาเลือกสถานที่";
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                            margin: EdgeInsets.all(5),
-                                          ),
-                                          Container(
-                                            child: TextFormField(
-                                              controller: _nameLocation,
-                                              validator: (value) {
-                                                return value!.isNotEmpty
-                                                    ? null
-                                                    : "กรุณากรอกข้อมูล";
-                                              },
-                                              decoration: InputDecoration(
-                                                labelText: "ชื่อสถานที่",
-                                                border: OutlineInputBorder(),
+                                                    )
+                                                    .toList(),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    _typeLocation = value;
+                                                  });
+                                                },
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return "กรุณาเลือกสถานที่";
+                                                  }
+                                                  return null;
+                                                },
                                               ),
+                                              margin: EdgeInsets.all(5),
                                             ),
-                                            margin: EdgeInsets.all(5),
-                                          ),
-                                          Container(
-                                            child: TextFormField(
-                                              controller: _dataLocation,
-                                              maxLines: 4,
-                                              validator: (value) {
-                                                return value!.isNotEmpty
-                                                    ? null
-                                                    : "กรุณากรอกข้อมูล";
-                                              },
-                                              decoration: InputDecoration(
-                                                labelText: "รายละเอียดสถานที่",
-                                                border: OutlineInputBorder(),
+                                            Container(
+                                              child: TextFormField(
+                                                controller: _nameLocation,
+                                                validator: (value) {
+                                                  return value!.isNotEmpty
+                                                      ? null
+                                                      : "กรุณากรอกข้อมูล";
+                                                },
+                                                decoration: InputDecoration(
+                                                  labelText: "ชื่อสถานที่",
+                                                  border: OutlineInputBorder(),
+                                                ),
                                               ),
-                                              keyboardType:
-                                                  TextInputType.multiline,
+                                              margin: EdgeInsets.all(5),
                                             ),
-                                            margin: EdgeInsets.all(5),
-                                          ),
-                                        ],
-                                      )),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('บันทึก'),
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          // Do something like updating SharedPreferences or User Settings etc.
+                                            Container(
+                                              child: TextFormField(
+                                                controller: _dataLocation,
+                                                maxLines: 4,
+                                                validator: (value) {
+                                                  return value!.isNotEmpty
+                                                      ? null
+                                                      : "กรุณากรอกข้อมูล";
+                                                },
+                                                decoration: InputDecoration(
+                                                  labelText: "รายละเอียดสถานที่",
+                                                  border: OutlineInputBorder(),
+                                                ),
+                                                keyboardType:
+                                                    TextInputType.multiline,
+                                              ),
+                                              margin: EdgeInsets.all(5),
+                                            ),
+                                          ],
+                                        )),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('บันทึก'),
+                                        onPressed: () {
+                                          if (_formKey.currentState!.validate()) {
+                                            // Do something like updating SharedPreferences or User Settings etc.
+                                            Navigator.of(context).pop();
+                                            insertLocation(inmapmark);
+                                            
+                                            
+                                          }
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: Text('ยกเลิก'),
+                                        onPressed: () {
                                           Navigator.of(context).pop();
-                                          insertLocation(inmapmark);
-                                        }
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text('ยกเลิก'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                });
                               });
-                            });
-                      },
-                    );
-                    setState(() {
-                      markmap.add(m);
-                    });
-                  },
+                        },
+                      );
+                      setState(() {
+                        markmap.add(m);
+                      });
+                    },
                 );
               } else {
                 return Center(
@@ -491,7 +517,7 @@ class _MapAdminState extends State<MapAdmin> {
           ),
         ],
       ),
-    /*  floatingActionButton: new Visibility(
+      /*  floatingActionButton: new Visibility(
         visible: true,
         child: new FloatingActionButton(
           onPressed: () {},

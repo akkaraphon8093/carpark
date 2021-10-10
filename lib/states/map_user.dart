@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:carpark/states/edit_account.dart';
 import 'package:carpark/states/map_admin.dart';
 import 'package:carpark/utillity/my_constan.dart';
 import 'package:carpark/widgets/show_image.dart';
@@ -324,13 +325,13 @@ class _MapUserState extends State<MapUser> {
 
   @override
   Widget build(BuildContext context) {
-    final name = 'PARKFORU';
+    final name = 'CarparkForU';
     final caption = 'จอดที่ไหนดี?';
     return Scaffold(
       key: _drawer,
       appBar: AppBar(
         centerTitle: true,
-        title: Text('PARKFORU'),
+        title: Text('CarparkForU'),
         backgroundColor: MyConstant.dark,
       ),
       body: Stack(
@@ -389,6 +390,12 @@ class _MapUserState extends State<MapUser> {
                     buildMenuItem(
                       text: '${widget.name}',
                       icon: Icons.face_outlined,
+                      onClicked: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditAccount(
+                                user: widget.user
+                              )))
                     ),
                     const SizedBox(
                       height: 5,
@@ -420,9 +427,10 @@ class _MapUserState extends State<MapUser> {
                                   builder: (context) => MapAdmin(
                                         user: widget.user,
                                         name: widget.name,
+                                        
                                       )));
                           Fluttertoast.showToast(
-                            msg: "กรุณาแตะที่แผนที่เพื่อมาร์คตำแหน่งสถานที่",
+                            msg: "แตะที่แผนที่เพื่อเพิ่มตำแหน่งสถานที่",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.CENTER,
                             timeInSecForIosWeb: 1,

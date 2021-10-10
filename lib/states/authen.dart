@@ -53,6 +53,10 @@ class _AuthenState extends State<Authen> {
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: SafeArea(child:
        Form(key: _signin, child: ListView(children: [
             buildImage(size),
@@ -199,7 +203,7 @@ class _AuthenState extends State<Authen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ShowTitle(
-          title: 'PARKFORU',
+          title: 'CarparkForU',
           textStlye: MyConstant().h2Style(),
         ),
       ],
