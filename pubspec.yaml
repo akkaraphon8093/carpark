@@ -89,3 +89,23 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  fonts:     
+  - family: Kodchasan       
+    fonts:         
+      - asset: font\Kodchasan-Bold.ttf
+      - asset: font\Kodchasan-BoldItalic.ttf
+      - asset: font\Kodchasan-ExtraLight.ttf
+      - asset: font\Kodchasan-ExtraLightItalic.ttf
+      - asset: font\Kodchasan-Italic.ttf
+      - asset: font\Kodchasan-Light.ttf
+      - asset: font\Kodchasan-LightItalic.ttf
+      - asset: font\Kodchasan-Medium.ttf
+      - asset: font\Kodchasan-MediumItalic.ttf
+      - asset: font\Kodchasan-Regular.ttf
+      - asset: font\Kodchasan-SemiBold.ttf
+      - asset: font\Kodchasan-SemiBoldItalic.ttf
+
+      
+
+  

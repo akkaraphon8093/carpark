@@ -66,7 +66,6 @@ class _EditAccountState extends State<EditAccount> {
         );
       }
     }
-
     return _userList = _getUserList;
   }
 
@@ -189,7 +188,7 @@ class _EditAccountState extends State<EditAccount> {
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
           child: TextFormField(
-           /* readOnly: true,
+          /* readOnly: true,
             onTap: () {
               showDialog(
                   context: context,
@@ -218,7 +217,8 @@ class _EditAccountState extends State<EditAccount> {
                           ),
                           onPressed: () {
                             editUser();
-                            Navigator.of(context).pop();
+                            //  Navigator.of(context).pop();
+                            
                           },
                         ),
                       ],
@@ -229,6 +229,7 @@ class _EditAccountState extends State<EditAccount> {
             decoration: InputDecoration(
               labelStyle: MyConstant().h3Style(),
               labelText: 'ชื่อ :',
+              hintText: _userList[0].name,
               prefixIcon: Icon(
                 Icons.badge_outlined,
                 color: MyConstant.dark,
@@ -262,7 +263,7 @@ class _EditAccountState extends State<EditAccount> {
           margin: EdgeInsets.only(top: 16),
           width: size * 0.6,
           child: TextFormField(
-          /*  readOnly: true,
+           /* readOnly: true,
             onTap: () {
               showDialog(
                   context: context,
@@ -291,7 +292,7 @@ class _EditAccountState extends State<EditAccount> {
                           ),
                           onPressed: () {
                             editUser();
-                            Navigator.of(context).pop();
+                          //  Navigator.of(context).pop();
                           },
                         ),
                       ],
@@ -365,7 +366,7 @@ class _EditAccountState extends State<EditAccount> {
                           ),
                           onPressed: () {
                             editUser();
-                            Navigator.of(context).pop();
+                           // Navigator.of(context).pop();
                           },
                         ),
                       ],

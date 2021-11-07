@@ -74,7 +74,7 @@ class _MapUserState extends State<MapUser> {
   Future<List<Mycar>> mycar() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/selectMycar.php",
+        "http://361a-184-22-195-95.ngrok.io/pj/selectMycar.php",
       ),
       body: {
         "user": widget.user,
@@ -388,7 +388,7 @@ class _MapUserState extends State<MapUser> {
                 child: Column(
                   children: [
                     buildMenuItem(
-                      text: '${widget.name}',
+                      text: '${widget.user}',
                       icon: Icons.face_outlined,
                       onClicked: () => Navigator.push(
                       context,
