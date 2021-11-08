@@ -74,7 +74,7 @@ class _MapUserState extends State<MapUser> {
   Future<List<Mycar>> mycar() async {
     var res = await http.post(
       Uri.parse(
-        "http://361a-184-22-195-95.ngrok.io/pj/selectMycar.php",
+        "http://192.168.1.107/pj/selectMycar.php",
       ),
       body: {
         "user": widget.user,
