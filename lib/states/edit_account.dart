@@ -51,7 +51,7 @@ class _EditAccountState extends State<EditAccount> {
   Future getUserData() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/selectUser.php",
+        "http://toom3737.thddns.net:5753/pj/selectUser.php",
       ),
       body: {
         "user": widget.user,
@@ -72,7 +72,7 @@ class _EditAccountState extends State<EditAccount> {
   Future editUser() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/editUser.php",
+        "http://toom3737.thddns.net:5753/pj/editUser.php",
       ),
       body: {
         "user": user.text,

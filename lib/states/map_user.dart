@@ -74,7 +74,7 @@ class _MapUserState extends State<MapUser> {
   Future<List<Mycar>> mycar() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/selectMycar.php",
+        "http://toom3737.thddns.net:5753/pj/selectMycar.php",
       ),
       body: {
         "user": widget.user,
@@ -96,7 +96,7 @@ class _MapUserState extends State<MapUser> {
   Future<List<MarkerLocation>> markerLocation() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/selectLocation.php",
+        "http://toom3737.thddns.net:5753/pj/selectLocation.php",
       ),
     );
 
@@ -117,7 +117,7 @@ class _MapUserState extends State<MapUser> {
   Future insertMycar() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/insertMycar.php",
+        "http://toom3737.thddns.net:5753/pj/insertMycar.php",
       ),
       body: {
         "user": widget.user,
@@ -157,7 +157,7 @@ class _MapUserState extends State<MapUser> {
   Future deleteMycar() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/deleteMycar.php",
+        "http://toom3737.thddns.net:5753/pj/deleteMycar.php",
       ),
       body: {
         "user": widget.user,

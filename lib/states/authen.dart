@@ -25,7 +25,7 @@ class _AuthenState extends State<Authen> {
   Future signin() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/selectUserPass.php",
+        "http://toom3737.thddns.net:5753/pj/selectUserPass.php",
       ),
       body: {
         "user": user.text,

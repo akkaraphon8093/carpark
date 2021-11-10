@@ -28,7 +28,7 @@ class _CreatAccountState extends State<CreatAccount> {
   Future signup() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/insertUser.php",
+        "http://toom3737.thddns.net:5753/pj/insertUser.php",
       ),
       body: {
         "name": name.text,

@@ -64,7 +64,7 @@ class _MapAdminState extends State<MapAdmin> {
   Future insertLocation(inmapmark) async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/insertLocation.php",
+        "http://toom3737.thddns.net:5753/pj/insertLocation.php",
       ),
       body: {
         "typelocation": _typeLocation,
@@ -122,7 +122,7 @@ class _MapAdminState extends State<MapAdmin> {
     print(_idlocation);
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/deleteLocation.php",
+        "http://toom3737.thddns.net:5753/pj/deleteLocation.php",
       ),
       body: {
         "idlocation": _idlocation,
@@ -161,7 +161,7 @@ class _MapAdminState extends State<MapAdmin> {
   Future<List<MarkerLocation>> markerLocation() async {
     var res = await http.post(
       Uri.parse(
-        "http://192.168.1.107/pj/selectLocation.php",
+        "http://toom3737.thddns.net:5753/pj/selectLocation.php",
       ),
     );
     List<MarkerLocation> _showMarkerLocation = [];
